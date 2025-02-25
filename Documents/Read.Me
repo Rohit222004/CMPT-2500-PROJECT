@@ -1,0 +1,70 @@
+Days on Market Predictor for Vehicle Sales Optimization
+Project Overview
+This project aims to predict the number of days a vehicle will remain on the market before it is sold. The solution involves cleaning and preprocessing the dataset, performing feature engineering, and training a Ridge regression model to make predictions. The project is structured to follow best practices in machine learning development, including modular code, configuration management, and clear documentation.
+
+Team Members
+1. Rohit
+2. Geetika
+3. Spandan Dahal
+4. Jatin Dandyan
+
+Course
+CMPT-2500: Machine Learning Deployment and Software Development
+
+Running the Project
+The project is structured as a Python package with the following directory structure:
+
+1. Data Preprocessing
+   Run the preprocess.py script to clean and preprocess the raw data:
+
+This will:
+
+ 1. Load the raw dataset from data/raw/CBB_Listings cleaned1.csv.
+
+ 2. Perform data cleaning, feature engineering, and preprocessing.
+
+ 3. Save the preprocessed data to data/processed/preprocessed_data.csv.
+
+2. Model Training
+   Train the Ridge regression model using the train.py script:
+
+This will:
+
+ 1. Load the preprocessed data from data/processed/preprocessed_data.csv.
+
+ 2. Split the data into training and test sets.
+
+ 3. Train the model using RandomizedSearchCV for hyperparameter tuning.
+
+ 4. Save the trained model to models/ridge_model.pkl.
+
+3. Model Prediction
+   Use the predict.py script to make predictions on new data:
+
+This will:
+
+ 1. Load the trained model from models/ridge_model.pkl.
+
+ 2. Load the test features from X_test.csv.
+
+ 3. Generate predictions and save them to model_predictions_combined.csv.
+
+4. Model Evaluation
+   Evaluate the model's performance using the evaluate.py script:
+
+ 1. This will:
+
+ 2. Load the trained model from models/ridge_model.pkl.
+
+ 3. Load the test data from X_test.csv and y_test.csv.
+
+ 4. Calculate and print evaluation metrics (RMSE and R-squared).
+
+Notebooks
+The notebooks/ folder contains Jupyter notebooks for exploratory data analysis, feature engineering, and model prototyping. 
+
+ 1. Exploratory Data Analysis (EDA): Analyze the dataset and visualize key trends.
+
+ 2. Feature Engineering: Create new features and preprocess the data.
+
+ 3. Model Prototyping: Experiment with different models and hyperparameters.
