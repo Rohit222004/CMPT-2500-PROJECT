@@ -1,14 +1,20 @@
-import joblib
+import mlflow.sklearn
 import pandas as pd
 import numpy as np
 
 class ModelPredictor:
-    def __init__(self, model_path: str):
+    def __init__(self, run_id: str):
         """
-        Initialize the predictor with the path to the saved model.
+        Initialize the predictor with the MLflow run ID.
+        
+        :param run_id: MLflow run ID to load the logged model.
         """
-        self.model = joblib.load(model_path)
-        print(f"Model loaded from {model_path}")
+        # Set MLflow tracking URI (ensure MLflow server is running)
+        mlflow.set_tracking_uri("http://localhost:8080")  
+
+        model_uri = f"runs:/{run_id}/model"
+        self.model = mlflow.sklearn.load_model(model_uri)
+        print(f"Model loaded from MLflow run ID: {run_id}")
 
     def predict(self, input_data: pd.DataFrame) -> np.ndarray:
         """
@@ -34,9 +40,9 @@ class ModelPredictor:
         print(f"Combined data with predictions saved to {output_file}")
 
 if __name__ == "__main__":
-    MODEL_PATH = 'models/ridge_model.pkl'
-    INPUT_FILE = 'Test_Cases/X_test.csv'
-    OUTPUT_FILE = 'Predictions/model_predictions_combined.csv'
+    RUN_ID = "5632798a8687486c80f2ab50fbc1997c"  
+    INPUT_FILE = "Test_Cases/X_test.csv"
+    OUTPUT_FILE = "Predictions/model_predictions_combined.csv"
 
-    predictor = ModelPredictor(MODEL_PATH)
+    predictor = ModelPredictor(RUN_ID)
     predictor.run_prediction(INPUT_FILE, OUTPUT_FILE)
