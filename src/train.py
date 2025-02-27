@@ -113,8 +113,11 @@ class ModelTrainer:
             # Log metrics
             y_pred = self.best_model.predict(self.X_test)
             mse = mean_squared_error(self.y_test, y_pred)
+            rmse = np.sqrt(mse)
             r2 = r2_score(self.y_test, y_pred)
+            
             mlflow.log_metric("mse", mse)
+            mlflow.log_metric("rmse", rmse)
             mlflow.log_metric("r2", r2)
 
             # Infer model signature and log the model with signature and input example
