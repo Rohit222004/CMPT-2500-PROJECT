@@ -136,7 +136,7 @@ class ModelTrainer:
         mlflow.set_tracking_uri("http://localhost:8080")
 
         # Create or set the MLflow experiment
-        experiment_name = "Days"
+        experiment_name = "Days_Experiment"
         if not mlflow.get_experiment_by_name(experiment_name):
             mlflow.create_experiment(experiment_name)
         mlflow.set_experiment(experiment_name)
@@ -159,6 +159,9 @@ class ModelTrainer:
             random_search.fit(self.X_train, self.y_train)
             best_model = random_search.best_estimator_
 
+            # Debug print: Check the type of best_model
+            print("Type of best_model for", model_name, ":", type(best_model))
+            
             # Evaluate on test set
             y_pred = best_model.predict(self.X_test)
             mse = mean_squared_error(self.y_test, y_pred)

@@ -1,70 +1,45 @@
-Days on Market Predictor for Vehicle Sales Optimization
-Project Overview
-This project aims to predict the number of days a vehicle will remain on the market before it is sold. The solution involves cleaning and preprocessing the dataset, performing feature engineering, and training a Ridge regression model to make predictions. The project is structured to follow best practices in machine learning development, including modular code, configuration management, and clear documentation.
+# Days on Market Predictor for Vehicle Sales Optimization
 
-Team Members
-1. Rohit
-2. Geetika
-3. Spandan Dahal
-4. Jatin Dandyan
+## Project Overview
+This project aims to predict the number of days a vehicle will remain on the market before being sold. The solution involves data cleaning, feature engineering, and training two regression models—Ridge Regression and Linear Regression—to generate predictions. The project is structured following best practices in machine learning development, including modular code, version control, configuration management, and comprehensive documentation.
 
-Course
-CMPT-2500: Machine Learning Deployment and Software Development
+## Team Members
+- Rohit  
+- Geetika  
+- Spandan Dahal  
+- Jatin Dandyan
 
-Running the Project
-The project is structured as a Python package with the following directory structure:
+## Course
+**CMPT-2500: Machine Learning Deployment and Software Development**
 
-1. Data Preprocessing
-   Run the preprocess.py script to clean and preprocess the raw data:
+## Project Structure
+The project is organized as a Python package with the following directory structure:
 
-This will:
 
- 1. Load the raw dataset from data/raw/CBB_Listings cleaned1.csv.
+## Features
+- Dual Model Approach:
+  Train and compare two models:
+  - **Ridge Regression (v1):** Incorporates L2 regularization to handle multicollinearity.
+  - **Linear Regression (v2):** Serves as a baseline model.
+- Robust Data Preprocessing:  
+  Extensive cleaning, outlier handling, and feature engineering ensure high-quality input data.
+- Hyperparameter Tuning:
+  RandomizedSearchCV is used for efficient model tuning.
+- Real-Time Prediction API: 
+  A Flask-based REST API (`predict_api.py`) enables real-time predictions.
+- Model Evaluation: 
+  Evaluation scripts compute metrics such as MSE, RMSE, and R² for performance assessment.
 
- 2. Perform data cleaning, feature engineering, and preprocessing.
+## Setup and Installation
 
- 3. Save the preprocessed data to data/processed/preprocessed_data.csv.
+### Prerequisites
+- Python 3.7 or higher
+- Virtual environment (recommended)
 
-2. Model Training
-   Train the Ridge regression model using the train.py script:
+### Environment Setup
+1. Clone the Repository:
+   ```bash
+   git clone <repository_url>
+   cd Days_on_Market_Predictor
 
-This will:
-
- 1. Load the preprocessed data from data/processed/preprocessed_data.csv.
-
- 2. Split the data into training and test sets.
-
- 3. Train the model using RandomizedSearchCV for hyperparameter tuning.
-
- 4. Save the trained model to models/ridge_model.pkl.
-
-3. Model Prediction
-   Use the predict.py script to make predictions on new data:
-
-This will:
-
- 1. Load the trained model from models/ridge_model.pkl.
-
- 2. Load the test features from X_test.csv.
-
- 3. Generate predictions and save them to model_predictions_combined.csv.
-
-4. Model Evaluation
-   Evaluate the model's performance using the evaluate.py script:
-
- 1. This will:
-
- 2. Load the trained model from models/ridge_model.pkl.
-
- 3. Load the test data from X_test.csv and y_test.csv.
-
- 4. Calculate and print evaluation metrics (RMSE and R-squared).
-
-Notebooks
-The notebooks/ folder contains Jupyter notebooks for exploratory data analysis, feature engineering, and model prototyping. 
-
- 1. Exploratory Data Analysis (EDA): Analyze the dataset and visualize key trends.
-
- 2. Feature Engineering: Create new features and preprocess the data.
-
- 3. Model Prototyping: Experiment with different models and hyperparameters.
+For additional information, please refer to our detailed documentation file.

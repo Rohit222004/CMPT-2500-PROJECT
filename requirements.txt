@@ -6,3 +6,4 @@ seaborn==0.13.2
 dvc==3.59.1
 dvc-gdrive==3.0.1
 mlflow==2.20.2
+flask==3.1.0
