@@ -15,13 +15,20 @@ import joblib
 from sklearn.metrics import mean_squared_error, r2_score
 from mlflow.models.signature import infer_signature
 
+# Import logging setup
+from logging_config import configure_logging
+
+# Initialize logger for training
+loggers = configure_logging()
+logger = loggers['train']
+
 
 class ModelTrainer:
     def __init__(
         self,
         preprocessed_file: str,
-        model_output_path_v1: str,  # path for first model pkl
-        model_output_path_v2: str,  # path for second model pkl
+        model_output_path_v1: str,
+        model_output_path_v2: str,
         test_cases_path: str
     ):
         """
@@ -40,14 +47,16 @@ class ModelTrainer:
         self.y_train = None
         self.y_test = None
 
-        self.best_model_v1 = None  # Will store the trained v1 model (Ridge)
-        self.best_model_v2 = None  # Will store the trained v2 model (Linear Regression)
+        self.best_model_v1 = None
+        self.best_model_v2 = None
 
     def load_data(self) -> pd.DataFrame:
         """
         Load the preprocessed CSV data.
         """
+        logger.info(f"📥 Loading data from {self.preprocessed_file}")
         df = pd.read_csv(self.preprocessed_file)
+        logger.info(f"✅ Data loaded successfully with shape {df.shape}")
         return df
 
     def prepare_dataset(self):
@@ -55,6 +64,8 @@ class ModelTrainer:
         Prepare the dataset by splitting into features and target, then train/test split.
         """
         df = self.load_data()
+        logger.info("🔎 Preparing dataset...")
+        
         # Adjust columns based on your preprocessed data structure
         X = df[
             [
@@ -77,13 +88,17 @@ class ModelTrainer:
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
             X, y, test_size=0.2, random_state=42
         )
-        print("Data split into training and test sets.")
-        return self.X_train, self.X_test, self.y_train, self.y_test
+
+        logger.info(f"✅ Data split into training and test sets:")
+        logger.info(f"   - Training set: {self.X_train.shape}")
+        logger.info(f"   - Test set: {self.X_test.shape}")
 
     def build_pipeline(self, regressor_class):
         """
         Build a pipeline given a particular regressor class (e.g. Ridge or LinearRegression).
         """
+        logger.info(f"🔨 Building pipeline with {regressor_class.__name__}")
+
         numerical_features = [
             "mileage",
             "price",
@@ -102,7 +117,7 @@ class ModelTrainer:
                     "num",
                     Pipeline(
                         steps=[
-                            ("imputer", SimpleImputer()),  # strategy tuned below
+                            ("imputer", SimpleImputer()),
                             ("scaler", StandardScaler()),
                         ]
                     ),
@@ -116,35 +131,32 @@ class ModelTrainer:
             ]
         )
 
-        # Instantiate the pipeline with a chosen regressor
         pipeline = Pipeline(
             steps=[
                 ("preprocessor", preprocessor),
                 ("regressor", regressor_class()),
             ]
         )
+
+        logger.info(f"✅ Pipeline created successfully!")
         return pipeline
 
-    def train_and_save_model(
-        self, pipeline, param_dist, model_name="SomeModel", output_path="model.pkl"
-    ):
+    def train_and_save_model(self, pipeline, param_dist, model_name, output_path):
         """
-        Utility function to run RandomizedSearchCV, fit a pipeline, log with MLflow,
-        and then save the best model.
+        Train model, evaluate, log with MLflow, and save.
         """
+        logger.info(f"🚀 Training model: {model_name}")
+
         # MLflow setup
         mlflow_tracking_uri = os.environ.get('MLFLOW_TRACKING_URI', 'http://localhost:5000')
-        mlflow.set_tracking_uri("mlflow_tracking_uri")
+        mlflow.set_tracking_uri(mlflow_tracking_uri)
 
-        # Create or set the MLflow experiment
         experiment_name = "Days_Experiment"
         if not mlflow.get_experiment_by_name(experiment_name):
             mlflow.create_experiment(experiment_name)
         mlflow.set_experiment(experiment_name)
 
-        # Start MLflow run
         with mlflow.start_run(run_name=model_name) as run:
-            # Log the parameters dictionary as a baseline reference
             mlflow.log_params({"search_space": str(param_dist)})
 
             random_search = RandomizedSearchCV(
@@ -160,115 +172,63 @@ class ModelTrainer:
             random_search.fit(self.X_train, self.y_train)
             best_model = random_search.best_estimator_
 
-            # Debug print: Check the type of best_model
-            print("Type of best_model for", model_name, ":", type(best_model))
-            
-            # Evaluate on test set
             y_pred = best_model.predict(self.X_test)
             mse = mean_squared_error(self.y_test, y_pred)
             rmse = np.sqrt(mse)
             r2 = r2_score(self.y_test, y_pred)
 
-            # Log metrics
+            logger.info(f"✅ {model_name} Metrics - MSE: {mse}, RMSE: {rmse}, R2: {r2}")
+
             mlflow.log_metric("mse", mse)
             mlflow.log_metric("rmse", rmse)
             mlflow.log_metric("r2", r2)
 
-            # Print metrics to console
-            print(f"Metrics for {model_name}:")
-            print(f"MSE: {mse}, RMSE: {rmse}, R2: {r2}")
-
-            # Infer model signature and log
             signature = infer_signature(self.X_train, best_model.predict(self.X_train))
             mlflow.sklearn.log_model(
-                best_model,
-                "model",
-                signature=signature,
-                input_example=self.X_train.iloc[:5],  # sample inputs
+                best_model, "model", signature=signature, input_example=self.X_train.iloc[:5]
             )
 
-            # Ensure the models directory exists
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
-
-            # Save the model locally
             joblib.dump(best_model, output_path)
-            print(f"Model {model_name} saved to {output_path}")
 
-            # Print the MLflow run URL for reference
+            logger.info(f"✅ {model_name} saved to {output_path}")
+
             run_id = mlflow.active_run().info.run_id
-            print(
-                f"MLflow Run URL: http://localhost/#/experiments/"
-                f"{mlflow.active_run().info.experiment_id}/runs/{run_id}"
-            )
+            logger.info(f"🔗 MLflow Run URL: http://localhost/#/experiments/{mlflow.active_run().info.experiment_id}/runs/{run_id}")
 
         return best_model
 
     def train(self):
         """
-        Main method to train both a Ridge model (v1) and a Linear Regression model (v2),
-        then save them as separate pickle files.
+        Main method to train both models.
         """
-        # 1) Prepare dataset
         self.prepare_dataset()
 
-        # 2) Build a pipeline for Ridge
+        # Ridge Regression
         pipeline_ridge = self.build_pipeline(Ridge)
-        # Define hyperparameters for the Ridge RandomizedSearchCV
         param_dist_ridge = {
             "regressor__alpha": np.logspace(-6, 3, 100),
             "preprocessor__num__imputer__strategy": ["mean", "median", "most_frequent"],
         }
-        # Train and save the best Ridge model
         self.best_model_v1 = self.train_and_save_model(
-            pipeline=pipeline_ridge,
-            param_dist=param_dist_ridge,
-            model_name="Ridge_Regression_v1",
-            output_path=self.model_output_path_v1,
+            pipeline_ridge, param_dist_ridge, "Ridge_Regression_v1", self.model_output_path_v1
         )
 
-        # 3) Build a pipeline for Linear Regression (v2)
+        # Linear Regression
         pipeline_linreg = self.build_pipeline(LinearRegression)
-        # Define hyperparameters for the Linear Regression RandomizedSearchCV;
-        # since LinearRegression has no regularization parameter by default,
-        # we only tune the imputer strategy.
         param_dist_linreg = {
             "preprocessor__num__imputer__strategy": ["mean", "median", "most_frequent"],
         }
-        # Train and save the best Linear Regression model
         self.best_model_v2 = self.train_and_save_model(
-            pipeline=pipeline_linreg,
-            param_dist=param_dist_linreg,
-            model_name="Linear_Regression_v2",
-            output_path=self.model_output_path_v2,
+            pipeline_linreg, param_dist_linreg, "Linear_Regression_v2", self.model_output_path_v2
         )
-
-        # 4) Save test datasets for reference or future predictions
-        os.makedirs(self.test_cases_path, exist_ok=True)
-        self.X_test.to_csv(os.path.join(self.test_cases_path, "X_test.csv"), index=False)
-        self.y_test.to_csv(os.path.join(self.test_cases_path, "y_test.csv"), index=False)
-        print(f"Test sets saved in {self.test_cases_path}")
-
-        print("\nBoth models trained and saved successfully!")
-        return self.best_model_v1, self.best_model_v2
 
 
 if __name__ == "__main__":
-    # Define paths (adjust as needed)
-    PREPROCESSED_FILE = "Data/preprocessed/preprocessed_data.csv"
-
-    # Ensure the models directory exists
-    os.makedirs("models", exist_ok=True)
-
-    # Save each model under a different file name
-    MODEL_PATH_V1 = "models/ridge_model_v1.pkl"
-    MODEL_PATH_V2 = "models/linear_model_v2.pkl"
-
-    TEST_CASES_FOLDER = "Test_Cases"
-
     trainer = ModelTrainer(
-        preprocessed_file=PREPROCESSED_FILE,
-        model_output_path_v1=MODEL_PATH_V1,
-        model_output_path_v2=MODEL_PATH_V2,
-        test_cases_path=TEST_CASES_FOLDER,
+        preprocessed_file="Data/preprocessed/preprocessed_data.csv",
+        model_output_path_v1="models/ridge_model_v1.pkl",
+        model_output_path_v2="models/linear_model_v2.pkl",
+        test_cases_path="Test_Cases"
     )
     trainer.train()
