@@ -65,7 +65,7 @@ class ModelTrainer:
         """
         df = self.load_data()
         logger.info("🔎 Preparing dataset...")
-        
+
         # Adjust columns based on your preprocessed data structure
         X = df[
             [
@@ -117,7 +117,7 @@ class ModelTrainer:
                     "num",
                     Pipeline(
                         steps=[
-                            ("imputer", SimpleImputer()),
+                            ("imputer", SimpleImputer(strategy="mean")),
                             ("scaler", StandardScaler()),
                         ]
                     ),
@@ -147,17 +147,30 @@ class ModelTrainer:
         """
         logger.info(f"🚀 Training model: {model_name}")
 
-        # MLflow setup
+        # ✅ MLflow setup
         mlflow_tracking_uri = os.environ.get('MLFLOW_TRACKING_URI', 'http://localhost:5000')
         mlflow.set_tracking_uri(mlflow_tracking_uri)
 
+        # ✅ Create or get experiment
         experiment_name = "Days_Experiment"
-        if not mlflow.get_experiment_by_name(experiment_name):
-            mlflow.create_experiment(experiment_name)
+        experiment = mlflow.get_experiment_by_name(experiment_name)
+
+        if experiment is None:
+            logger.info(f"📌 Creating experiment '{experiment_name}'")
+            experiment_id = mlflow.create_experiment(experiment_name)
+        else:
+            experiment_id = experiment.experiment_id
+            logger.info(f"📌 Using existing experiment ID: {experiment_id}")
+
         mlflow.set_experiment(experiment_name)
 
+        # ✅ Start MLflow run
         with mlflow.start_run(run_name=model_name) as run:
+            logger.info(f"✅ MLflow run started with ID: {run.info.run_id}")
+
             mlflow.log_params({"search_space": str(param_dist)})
+
+            logger.info("🔎 Running RandomizedSearchCV...")
 
             random_search = RandomizedSearchCV(
                 estimator=pipeline,
@@ -172,6 +185,9 @@ class ModelTrainer:
             random_search.fit(self.X_train, self.y_train)
             best_model = random_search.best_estimator_
 
+            logger.info("✅ Model training completed")
+
+            # ✅ Make predictions and log metrics
             y_pred = best_model.predict(self.X_test)
             mse = mean_squared_error(self.y_test, y_pred)
             rmse = np.sqrt(mse)
@@ -183,6 +199,7 @@ class ModelTrainer:
             mlflow.log_metric("rmse", rmse)
             mlflow.log_metric("r2", r2)
 
+            # ✅ Log model
             signature = infer_signature(self.X_train, best_model.predict(self.X_train))
             mlflow.sklearn.log_model(
                 best_model, "model", signature=signature, input_example=self.X_train.iloc[:5]
@@ -194,9 +211,10 @@ class ModelTrainer:
             logger.info(f"✅ {model_name} saved to {output_path}")
 
             run_id = mlflow.active_run().info.run_id
-            logger.info(f"🔗 MLflow Run URL: http://localhost/#/experiments/{mlflow.active_run().info.experiment_id}/runs/{run_id}")
+            logger.info(f"🔗 MLflow Run URL: http://localhost:5000/#/experiments/{experiment_id}/runs/{run_id}")
 
-        return best_model
+        # ✅ Ensure the run is properly closed
+        mlflow.end_run()
 
     def train(self):
         """
@@ -204,7 +222,7 @@ class ModelTrainer:
         """
         self.prepare_dataset()
 
-        # Ridge Regression
+        # ✅ Ridge Regression
         pipeline_ridge = self.build_pipeline(Ridge)
         param_dist_ridge = {
             "regressor__alpha": np.logspace(-6, 3, 100),
@@ -214,7 +232,7 @@ class ModelTrainer:
             pipeline_ridge, param_dist_ridge, "Ridge_Regression_v1", self.model_output_path_v1
         )
 
-        # Linear Regression
+        # ✅ Linear Regression
         pipeline_linreg = self.build_pipeline(LinearRegression)
         param_dist_linreg = {
             "preprocessor__num__imputer__strategy": ["mean", "median", "most_frequent"],
