@@ -134,4 +134,4 @@ def predict_v2():
 
 if __name__ == "__main__":
     print("Starting Flask API...")
-    app.run(host='127.0.0.1', port=9992, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

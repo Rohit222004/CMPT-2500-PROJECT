@@ -133,7 +133,8 @@ class ModelTrainer:
         and then save the best model.
         """
         # MLflow setup
-        mlflow.set_tracking_uri("http://localhost:8080")
+        mlflow_tracking_uri = os.environ.get('MLFLOW_TRACKING_URI', 'http://localhost:5000')
+        mlflow.set_tracking_uri("mlflow_tracking_uri")
 
         # Create or set the MLflow experiment
         experiment_name = "Days_Experiment"
