@@ -1,132 +1,125 @@
-# **Deep Explanation of the Project Code**  
+# **Deep Explanation of the Project Code**
 
-This document provides an in-depth explanation of the primary scripts and design decisions in the **Days on Market Predictor for Vehicle Sales Optimization** project. The project is modularized into components for data preprocessing, model training, prediction (both batch and via a REST API), evaluation, and model persistence. This design adheres to best practices in MLOps, ensuring maintainability and extensibility.
+This document explains the code and design decisions for the **Days on Market Predictor** project. The project handles data preprocessing, training, and prediction using Ridge and Linear Regression models. It also includes a Flask-based REST API and logs to both the console and files for monitoring.
 
 ---
 
-## 1. **`preprocess.py`**  
+## 1. **`preprocess.py`**
 
-### **Purpose**
-Handles data cleaning, feature engineering, and preliminary visualizations to convert raw CSV data into a format suitable for modeling.
+### **Purpose**  
+This script handles data cleaning and feature engineering. It takes raw CSV files and converts them into a structured format ready for training.
 
 ### **DataPreprocessor Class**
 
 - **Attributes:**
-  - `file_path (str)`: Path to the raw CSV data file.  
-  - `df (pd.DataFrame)`: The dataset loaded from CSV.  
-  
+  - `file_path (str)` → Path to the raw data file.  
+  - `df (pd.DataFrame)` → DataFrame holding the dataset.  
+
 - **Methods:**
-  - **`load_data()`**  
-    - Reads the CSV file using `pandas.read_csv`.  
-    - Prints a preview (head, info, describe, shape) of the dataset.  
-    - Returns the loaded DataFrame.  
+  - `load_data()`  
+    - Reads CSV using `pandas.read_csv`.  
+    - Prints a preview of the data (head, info, describe).  
 
-  - **`preprocess_data()`**  
-    - Checks for and logs duplicate rows.  
-    - Selects relevant columns.  
-    - Handles anomalous/outlier values in `price` and `msrp` by replacing values ≤1000 with group means.  
-    - Fills missing numeric values with the mean.  
-    - Encodes `transmission_from_vin` as a binary feature.  
-    - Visualizes the distribution of transmissions via a pie chart.  
-    - Creates a new feature `vehicle_age` (current_year - `model_year`).  
-    - Processes `listing_first_date` to extract `year`, `month`, and `day`.  
-    - Returns the cleaned DataFrame.  
+  - `preprocess_data()`  
+    - Logs duplicate rows.  
+    - Replaces low `price` and `msrp` values with group means.  
+    - Handles missing values using mean imputation.  
+    - Encodes categorical variables.  
+    - Creates `vehicle_age` from `model_year`.  
+    - Extracts year, month, and day from `listing_first_date`.  
 
-  - **`save_preprocessed_data(output_file)`**  
-    - Saves the preprocessed DataFrame to a CSV file.  
+  - `save_preprocessed_data()`  
+    - Saves the processed DataFrame to CSV.  
 
-  - **`prepare_data()`**  
-    - Splits the processed DataFrame into features (`X`) and target (`days_on_market`).  
-
-### ✅ **Notable Design Decisions**
-- **Outlier Replacement:**  
-  Low `price` and `msrp` values are replaced with group means.  
-- **Feature Engineering:**  
-  Additional features such as `vehicle_age` and date components are created.  
-- **Data Integrity:**  
-  Extensive logging and duplicate/missing value checks ensure high-quality input data.  
+### ✅ **Design Decisions**
+- Used group-based mean replacement for low prices to handle outliers.
+- Created `vehicle_age` and extracted date components for better feature engineering.
+- Included detailed logging to track processing steps.
 
 ---
 
-## 2. **`train.py`**  
+## 2. **`train.py`**
 
-### **Purpose**
-Trains two models (Ridge Regression and Linear Regression) using hyperparameter tuning and cross-validation.
+### **Purpose**  
+This script handles model training using Ridge Regression and Linear Regression. It uses cross-validation to tune hyperparameters and logs the training details using MLflow.
 
 ### **ModelTrainer Class**
 
 - **Attributes:**
-  - `preprocessed_file (str)`: Path to the preprocessed CSV data.  
-  - `model_output_path_v1` & `model_output_path_v2 (str)`: Paths to save the trained models.  
-  - `test_cases_path (str)`: Directory to save test splits.  
-  - Train/test splits (`X_train`, `X_test`, `y_train`, `y_test`).  
-  - `best_model_v1` & `best_model_v2`: The tuned models.  
+  - `preprocessed_file` → Path to the preprocessed data.  
+  - `model_output_path_v1` & `model_output_path_v2` → Paths to save trained models.  
+  - `test_cases_path` → Path to save test cases.  
+  - `X_train`, `X_test`, `y_train`, `y_test` → Train/test splits.  
+  - `best_model_v1`, `best_model_v2` → Trained models.  
 
 - **Methods:**
-  - **`load_data()`**  
-    - Loads preprocessed data.  
+  - `load_data()`  
+    - Loads the preprocessed data.  
 
-  - **`prepare_dataset()`**  
-    - Splits data into features and target, then performs an 80/20 train/test split.  
+  - `prepare_dataset()`  
+    - Splits data into train and test sets.  
 
-  - **`build_pipeline(regressor_class)`**  
-    - Creates a pipeline combining numeric (imputation, scaling) and categorical (one-hot encoding) transformations.  
-    - Appends the specified regressor (Ridge or LinearRegression).  
+  - `build_pipeline()`  
+    - Builds a preprocessing pipeline for numeric and categorical data.  
+    - Adds Ridge or Linear Regression as the regressor.  
 
-  - **`train_and_save_model()`**  
-    - Uses `RandomizedSearchCV` for hyperparameter tuning.  
-    - Logs parameters and metrics with MLflow.  
-    - Evaluates the model on test data (MSE, RMSE, R²).  
+  - `train_and_save_model()`  
+    - Uses `RandomizedSearchCV` to tune hyperparameters.  
+    - Logs parameters and metrics using MLflow.  
     - Saves the best model using `joblib.dump`.  
 
-  - **`train()`**  
-    - Trains both models:
-      - **v1 (Ridge Regression):** Uses L2 regularization to mitigate multicollinearity.  
-      - **v2 (Linear Regression):** Serves as a baseline model.  
-    - Saves test datasets for future use.  
+  - `train()`  
+    - Trains both Ridge and Linear Regression models.  
+    - Saves test cases for future use.  
 
-### ✅ **Notable Design Decisions**
-- **Model Diversity:**  
-  Using both Ridge and Linear Regression allows comparative analysis.  
-- **Efficient Tuning:**  
-  RandomizedSearchCV is used to efficiently search hyperparameter space.  
-- **Pipeline Consistency:**  
-  Ensures identical preprocessing for training and test data.  
+### ✅ **Design Decisions**
+- Ridge Regression helps with multicollinearity using L2 regularization.
+- Linear Regression acts as a baseline model.
+- MLflow handles experiment tracking and logging.
 
 ---
 
-## 3. **`predict.py` and `predict_api.py`**  
+## 3. **`predict_api.py`**
 
-### **Purpose**
-Loads the trained models and generates predictions on unseen data. Predictions can be run as a batch process or via a REST API for real-time inference.
+### **Purpose**  
+This script runs a Flask-based REST API to serve predictions in real time. 
 
-### **REST API – `predict_api.py`**  
-- **Endpoints:**
-  - **Home (`/CMPT-2500_PROJECT_home`)** – Provides an overview of the API and expected JSON payload format.  
-  - **Health (`/CMPT-2500_PROJECT_health_status`)** – Confirms that the API is running.  
-  - **Predict v1 (`/v1/predict1`)** – Uses the Ridge Regression model to generate predictions on preprocessed data.  
-  - **Predict v2 (`/v2/predict1`)** – Uses the Linear Regression model to generate predictions.  
+### **Endpoints**
+- **Home (`/`)**  
+    - Displays an overview of the API.  
+    - Shows available endpoints and input format.  
+
+- **Health (`/CMPT-2500_PROJECT_health_status`)**  
+    - Confirms that the API is running.  
+    - Logs model loading status.  
+
+- **Predict v1 (`/v1/predict1`)**  
+    - Uses Ridge Regression for predictions.  
+
+- **Predict v2 (`/v2/predict1`)**  
+    - Uses Linear Regression for predictions.  
+
+### ✅ **Design Decisions**
+- Logs input and output for better debugging.
+- Input validation ensures data format consistency.
+- Flask app is set to listen on `0.0.0.0` to work inside Docker.
 
 ---
 
-## 4. **Docker Setup**  
+## 4. **Logging Configuration – `logging_config.py`**  
+- Configured to:
+  - Write logs to both `stdout` and `app.log` using `RotatingFileHandler`.  
+  - Rotate logs when the size exceeds 10MB (up to 5 backups).  
+  - Create separate loggers for `train` and `api` components.  
 
-### **Dockerfile**  
-Defines the environment for the Flask-based prediction API container:
-```dockerfile
-FROM python:3.10-slim
+### **Example:**
+```python
+from logging_config import configure_logging
 
-WORKDIR /app
+loggers = configure_logging()
+logger = loggers['train']
 
-COPY requirements.txt requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-RUN mkdir -p Data/raw/processed
-
-ENV PYTHONPATH=/app
-ENV FLASK_APP=predict_api.py
-
-EXPOSE 9000
-
-CMD ["python", "predict_api.py"]
+def train_model():
+    logger.info("Starting model training")
+    # Training code here
+    logger.info(f"Model trained successfully with accuracy: {accuracy}")
