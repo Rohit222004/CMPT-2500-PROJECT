@@ -1,0 +1,40 @@
+{
+    "id": null,
+    "title": "Training Dashboard",
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "R2 Score",
+        "type": "gauge",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "regression_r_squared"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 0, "w": 8, "h": 5 },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "min": 0,
+            "max": 1
+          }
+        }
+      },
+      {
+        "title": "MSE",
+        "type": "stat",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "regression_mean_squared_error"
+          }
+        ],
+        "gridPos": { "x": 8, "y": 0, "w": 8, "h": 5 }
+      }
+    ],
+    "schemaVersion": 32,
+    "version": 1,
+    "refresh": "10s"
+  }
+  

@@ -4,12 +4,28 @@ import joblib
 import pandas as pd
 from logging_config import configure_logging
 import traceback
+import time
+import psutil
+import threading
+
+# Prometheus monitoring
+from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_client import Counter, Histogram, Gauge
 
 # Initialize logging
 loggers = configure_logging()
 logger = loggers['api']
 
 app = Flask(__name__)
+
+# Setup Prometheus monitoring
+metrics = PrometheusMetrics(app)
+
+# Custom metrics
+prediction_requests = Counter('model_prediction_requests_total', 'Total prediction requests', ['model_version', 'status'])
+prediction_time = Histogram('model_prediction_duration_seconds', 'Prediction duration in seconds', ['model_version'])
+memory_usage = Gauge('app_memory_usage_bytes', 'Memory usage of the application')
+cpu_usage = Gauge('app_cpu_usage_percent', 'CPU usage percentage of the application')
 
 # Define paths for the models and preprocessed data
 model_v1_path = os.path.join("models", "ridge_model_v1.pkl")
@@ -46,16 +62,12 @@ except Exception as e:
     logger.error(f" Error loading preprocessed data: {e}")
     preprocessed_data = None
 
-# Define the expected columns (order and names should match your training data)
 EXPECTED_COLUMNS = [
     "model_year", "make", "model", "mileage", "price", "transmission_from_vin",
     "fuel_type_from_vin", "days_on_market", "msrp", "number_price_changes",
     "dealer_name", "listing_type", "listing_first_date", "vehicle_age", "year", "month", "day"
 ]
 
-# ========================
-# ROOT ENDPOINT
-# ========================
 @app.route('/', methods=['GET'])
 def root():
     info = {
@@ -70,9 +82,6 @@ def root():
     }
     return jsonify(info)
 
-# ========================
-# API HOME ENDPOINT
-# ========================
 @app.route('/CMPT-2500_PROJECT_home', methods=['GET'])
 def home():
     info = {
@@ -86,9 +95,6 @@ def home():
     }
     return jsonify(info)
 
-# ========================
-# 🚀 HEALTH CHECK ENDPOINT
-# ========================
 @app.route('/CMPT-2500_PROJECT_health_status', methods=['GET'])
 def health_status():
     status = {
@@ -101,68 +107,88 @@ def health_status():
     logger.info("Health check successful")
     return jsonify(status)
 
-# ========================
-# 🚀 PREDICTION ENDPOINTS
-# ========================
 @app.route('/v1/predict1', methods=['GET'])
 def predict_v1():
+    start_time = time.time()
+    model_version = "v1"
+
     if model_v1 is None:
         logger.error("❌ Model v1 is not available")
+        prediction_requests.labels(model_version=model_version, status="error").inc()
         return jsonify({"error": "Model v1 is not available"}), 500
 
     try:
         if preprocessed_data is None or preprocessed_data.empty:
             logger.warning("⚠️ Preprocessed data is not available or empty")
+            prediction_requests.labels(model_version=model_version, status="error").inc()
             return jsonify({"error": "Preprocessed data is not available"}), 500
 
         logger.info(f"📥 Using preprocessed data for prediction (v1): {preprocessed_data.shape}")
 
-        # ✅ Make predictions for all rows
         predictions = model_v1.predict(preprocessed_data)
         logger.info(f"✅ Predictions (v1) successful for {len(predictions)} rows")
 
-        # ✅ Output only the predictions — no input data
         response = predictions.tolist()
-
         logger.info(f"✅ Returning {len(response)} predictions")
+
+        prediction_requests.labels(model_version=model_version, status="success").inc()
+        prediction_time.labels(model_version=model_version).observe(time.time() - start_time)
 
         return jsonify(response), 200
 
     except Exception as e:
         logger.error(f"❌ Prediction error (v1): {traceback.format_exc()}")
+        prediction_requests.labels(model_version=model_version, status="error").inc()
         return jsonify({"error": f"Prediction error: {str(e)}"}), 500
 
 @app.route('/v2/predict1', methods=['GET'])
 def predict_v2():
+    start_time = time.time()
+    model_version = "v2"
+
     if model_v2 is None:
         logger.error("❌ Model v2 is not available")
+        prediction_requests.labels(model_version=model_version, status="error").inc()
         return jsonify({"error": "Model v2 is not available"}), 500
 
     try:
         if preprocessed_data is None or preprocessed_data.empty:
             logger.warning("⚠️ Preprocessed data is not available or empty")
+            prediction_requests.labels(model_version=model_version, status="error").inc()
             return jsonify({"error": "Preprocessed data is not available"}), 500
 
         logger.info(f"📥 Using preprocessed data for prediction (v2): {preprocessed_data.shape}")
 
-        # ✅ Make predictions for all rows
         predictions = model_v2.predict(preprocessed_data)
         logger.info(f"✅ Predictions (v2) successful for {len(predictions)} rows")
 
-        # ✅ Output only the predictions — no input data
         response = predictions.tolist()
-
         logger.info(f"✅ Returning {len(response)} predictions")
+
+        prediction_requests.labels(model_version=model_version, status="success").inc()
+        prediction_time.labels(model_version=model_version).observe(time.time() - start_time)
 
         return jsonify(response), 200
 
     except Exception as e:
         logger.error(f"❌ Prediction error (v2): {traceback.format_exc()}")
+        prediction_requests.labels(model_version=model_version, status="error").inc()
         return jsonify({"error": f"Prediction error: {str(e)}"}), 500
 
-# ========================
-# 🚀 MAIN ENTRY POINT
-# ========================
+# Background thread for system resource monitoring
+def monitor_resources():
+    """Update system resource metrics every 15 seconds"""
+    while True:
+        process = psutil.Process(os.getpid())
+        memory_usage.set(process.memory_info().rss)  # in bytes
+        cpu_usage.set(process.cpu_percent())
+        time.sleep(15)
+
 if __name__ == "__main__":
     logger.info("Starting Flask API...")
+
+    # Start resource monitoring
+    monitor_thread = threading.Thread(target=monitor_resources, daemon=True)
+    monitor_thread.start()
+
     app.run(host='0.0.0.0', port=9000, debug=True)

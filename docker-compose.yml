@@ -17,8 +17,9 @@ services:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
     depends_on:
       - mlflow
+      - prometheus
     networks:
-      - mlflow-network
+      - ml-network
 
   mlflow:
     container_name: cmpt-2500-project-mlflow
@@ -30,13 +31,43 @@ services:
     volumes:
       - mlflow-data:/mlflow
     networks:
-      - mlflow-network
+      - ml-network
 
-# 🔥 FIX: Move these to top-level (NOT under 'services') 🔥
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: cmpt-2500-project-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - ./prometheus/rules:/etc/prometheus/rules  # ✅ Added alert rules directory
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - ml-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: cmpt-2500-project-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana:/etc/grafana
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - ml-network
+
 networks:
-  mlflow-network:
+  ml-network:
     driver: bridge
 
 volumes:
   mlflow-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
     driver: local

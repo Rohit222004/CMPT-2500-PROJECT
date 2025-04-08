@@ -18,6 +18,9 @@ from mlflow.models.signature import infer_signature
 # Import logging setup
 from logging_config import configure_logging
 
+# Import Prometheus monitoring
+from utils.monitoring import RegressionMonitor
+
 # Initialize logger for training
 loggers = configure_logging()
 logger = loggers['train']
@@ -31,12 +34,6 @@ class ModelTrainer:
         model_output_path_v2: str,
         test_cases_path: str
     ):
-        """
-        Initialize with:
-          - path to the preprocessed CSV file
-          - two model save paths (for v1 and v2)
-          - test cases folder path
-        """
         self.preprocessed_file = preprocessed_file
         self.model_output_path_v1 = model_output_path_v1
         self.model_output_path_v2 = model_output_path_v2
@@ -51,22 +48,15 @@ class ModelTrainer:
         self.best_model_v2 = None
 
     def load_data(self) -> pd.DataFrame:
-        """
-        Load the preprocessed CSV data.
-        """
         logger.info(f"📥 Loading data from {self.preprocessed_file}")
         df = pd.read_csv(self.preprocessed_file)
         logger.info(f"✅ Data loaded successfully with shape {df.shape}")
         return df
 
     def prepare_dataset(self):
-        """
-        Prepare the dataset by splitting into features and target, then train/test split.
-        """
         df = self.load_data()
         logger.info("🔎 Preparing dataset...")
 
-        # Adjust columns based on your preprocessed data structure
         X = df[
             [
                 "number_price_changes",
@@ -94,9 +84,6 @@ class ModelTrainer:
         logger.info(f"   - Test set: {self.X_test.shape}")
 
     def build_pipeline(self, regressor_class):
-        """
-        Build a pipeline given a particular regressor class (e.g. Ridge or LinearRegression).
-        """
         logger.info(f"🔨 Building pipeline with {regressor_class.__name__}")
 
         numerical_features = [
@@ -142,16 +129,11 @@ class ModelTrainer:
         return pipeline
 
     def train_and_save_model(self, pipeline, param_dist, model_name, output_path):
-        """
-        Train model, evaluate, log with MLflow, and save.
-        """
         logger.info(f"🚀 Training model: {model_name}")
 
-        # ✅ MLflow setup
         mlflow_tracking_uri = os.environ.get('MLFLOW_TRACKING_URI', 'http://localhost:5000')
         mlflow.set_tracking_uri(mlflow_tracking_uri)
 
-        # ✅ Create or get experiment
         experiment_name = "Days_Experiment"
         experiment = mlflow.get_experiment_by_name(experiment_name)
 
@@ -164,7 +146,6 @@ class ModelTrainer:
 
         mlflow.set_experiment(experiment_name)
 
-        # ✅ Start MLflow run
         with mlflow.start_run(run_name=model_name) as run:
             logger.info(f"✅ MLflow run started with ID: {run.info.run_id}")
 
@@ -187,7 +168,6 @@ class ModelTrainer:
 
             logger.info("✅ Model training completed")
 
-            # ✅ Make predictions and log metrics
             y_pred = best_model.predict(self.X_test)
             mse = mean_squared_error(self.y_test, y_pred)
             rmse = np.sqrt(mse)
@@ -199,7 +179,10 @@ class ModelTrainer:
             mlflow.log_metric("rmse", rmse)
             mlflow.log_metric("r2", r2)
 
-            # ✅ Log model
+            # ✅ Prometheus monitoring integration
+            monitor = RegressionMonitor(port=8002)
+            monitor.record_metrics(mse=mse, rmse=rmse, r_squared=r2)
+
             signature = infer_signature(self.X_train, best_model.predict(self.X_train))
             mlflow.sklearn.log_model(
                 best_model, "model", signature=signature, input_example=self.X_train.iloc[:5]
@@ -213,16 +196,11 @@ class ModelTrainer:
             run_id = mlflow.active_run().info.run_id
             logger.info(f"🔗 MLflow Run URL: http://localhost:5000/#/experiments/{experiment_id}/runs/{run_id}")
 
-        # ✅ Ensure the run is properly closed
         mlflow.end_run()
 
     def train(self):
-        """
-        Main method to train both models.
-        """
         self.prepare_dataset()
 
-        # ✅ Ridge Regression
         pipeline_ridge = self.build_pipeline(Ridge)
         param_dist_ridge = {
             "regressor__alpha": np.logspace(-6, 3, 100),
@@ -232,7 +210,6 @@ class ModelTrainer:
             pipeline_ridge, param_dist_ridge, "Ridge_Regression_v1", self.model_output_path_v1
         )
 
-        # ✅ Linear Regression
         pipeline_linreg = self.build_pipeline(LinearRegression)
         param_dist_linreg = {
             "preprocessor__num__imputer__strategy": ["mean", "median", "most_frequent"],
