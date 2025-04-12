@@ -1,4 +1,5 @@
 import os
+import sys
 import mlflow
 import mlflow.sklearn
 import numpy as np
@@ -15,11 +16,14 @@ import joblib
 from sklearn.metrics import mean_squared_error, r2_score
 from mlflow.models.signature import infer_signature
 
-# Import logging setup
-from logging_config import configure_logging
+# Fix imports by adding both project root and src directory to Python path
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.extend([PROJECT_ROOT, SRC_DIR])
 
-# Import Prometheus monitoring
-from utils.monitoring import RegressionMonitor
+# Now these imports will work
+from logging_config import configure_logging
+from src.utils.monitoring import RegressionMonitor
 
 # Initialize logger for training
 loggers = configure_logging()
@@ -51,6 +55,13 @@ class ModelTrainer:
         logger.info(f"📥 Loading data from {self.preprocessed_file}")
         df = pd.read_csv(self.preprocessed_file)
         logger.info(f"✅ Data loaded successfully with shape {df.shape}")
+
+        # 🔧 Convert integer columns with potential missing values to float
+        convert_cols = ['number_price_changes', 'year', 'month', 'day']  # Add any others if needed
+        for col in convert_cols:
+          if col in df.columns:
+            df[col] = df[col].astype(float)
+
         return df
 
     def prepare_dataset(self):
@@ -179,7 +190,7 @@ class ModelTrainer:
             mlflow.log_metric("rmse", rmse)
             mlflow.log_metric("r2", r2)
 
-            # ✅ Prometheus monitoring integration
+            # Prometheus monitoring integration
             monitor = RegressionMonitor(port=8002)
             monitor.record_metrics(mse=mse, rmse=rmse, r_squared=r2)
 
@@ -206,7 +217,7 @@ class ModelTrainer:
             "regressor__alpha": np.logspace(-6, 3, 100),
             "preprocessor__num__imputer__strategy": ["mean", "median", "most_frequent"],
         }
-        self.best_model_v1 = self.train_and_save_model(
+        self.train_and_save_model(
             pipeline_ridge, param_dist_ridge, "Ridge_Regression_v1", self.model_output_path_v1
         )
 
@@ -214,7 +225,7 @@ class ModelTrainer:
         param_dist_linreg = {
             "preprocessor__num__imputer__strategy": ["mean", "median", "most_frequent"],
         }
-        self.best_model_v2 = self.train_and_save_model(
+        self.train_and_save_model(
             pipeline_linreg, param_dist_linreg, "Linear_Regression_v2", self.model_output_path_v2
         )
 
