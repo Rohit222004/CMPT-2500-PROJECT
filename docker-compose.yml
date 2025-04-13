@@ -1,7 +1,6 @@
-version: '3'
+version: '3.8'
 
 services:
-
   app:
     container_name: cmpt-2500-project-app
     build:
@@ -14,10 +13,9 @@ services:
       - ./data:/app/data
       - ./predictions:/app/predictions
     environment:
-      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MLFLOW_TRACKING_URI=http://mlflow:5001
     depends_on:
       - mlflow
-      - prometheus
     networks:
       - ml-network
 
@@ -27,47 +25,36 @@ services:
       context: .
       dockerfile: Dockerfile.mlflow
     ports:
-      - "5000:5000"
+      - "5001:5000"
     volumes:
-      - mlflow-data:/mlflow
+      - ./mlruns:/mlflow/artifacts
+      - ./mlflow.db:/mlflow/mlflow.db
+      - ./logs:/mlflow/logs
     networks:
       - ml-network
 
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: cmpt-2500-project-prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus:/etc/prometheus
-      - ./prometheus/rules:/etc/prometheus/rules  # ✅ Added alert rules directory
-      - prometheus-data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    networks:
-      - ml-network
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: cmpt-2500-project-grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./grafana:/etc/grafana
-      - grafana-data:/var/lib/grafana
+  train-metrics:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cmpt-2500-project-train
+    command: python src/train.py
     depends_on:
-      - prometheus
+      - mlflow
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./mlruns:/mlflow/artifacts
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
     networks:
       - ml-network
-
-networks:
-  ml-network:
-    driver: bridge
 
 volumes:
   mlflow-data:
     driver: local
-  prometheus-data:
-    driver: local
-  grafana-data:
-    driver: local
+
+networks:
+  ml-network:
+    driver: bridge

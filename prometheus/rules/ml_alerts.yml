@@ -1,42 +1,49 @@
 groups:
-  - name: ml_application_alerts
+  - name: prediction-api-alerts
     rules:
-      # Alert for high prediction API error rate
-      - alert: HighErrorRate
-        expr: sum(rate(model_prediction_requests_total{status="error"}[5m])) / sum(rate(model_prediction_requests_total[5m])) > 0.1
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "High prediction error rate (> 10%)"
-          description: "Prediction API error rate is {{ $value | humanizePercentage }} over the last 5 minutes."
-          
-      # Alert for slow prediction response time
-      - alert: SlowPredictionResponse
-        expr: histogram_quantile(0.95, sum(rate(model_prediction_duration_seconds_bucket[5m])) by (le, model_version)) > 1.0
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Slow prediction response time"
-          description: "95th percentile response time for model {{ $labels.model_version }} is {{ $value }}s (>1s threshold)."
-          
-      # Alert for high memory usage
       - alert: HighMemoryUsage
-        expr: app_memory_usage_bytes / 1024 / 1024 / 1024 > 1.5
-        for: 5m
+        expr: app_memory_usage_bytes > 1500000000  # 1.5 GB
+        for: 2m
         labels:
-          severity: warning
+          severity: critical
         annotations:
           summary: "High memory usage"
-          description: "Memory usage is {{ $value | humanize }}GB, exceeding the 1.5GB threshold."
-          
-      # Alert for stalled training (no updates to metrics in 15 minutes)
-      - alert: StalledTraining
-        expr: time() - max(training_epochs_total_created) > 900
+          description: "Memory usage exceeded 1.5GB for over 2 minutes."
+
+      - alert: HighCPUUsage
+        expr: app_cpu_usage_percent > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage over 80% for 2 minutes."
+
+      - alert: HighErrorRate
+        expr: rate(model_prediction_requests_total{status="error"}[5m]) > 0.05
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Training appears to be stalled"
-          description: "No updates to training metrics in the last 15 minutes."
+          summary: "Prediction errors exceed 5%"
+          description: "More than 5% of prediction API responses are errors."
+
+  - name: model-training-alerts
+    rules:
+      - alert: LowRSquared
+        expr: regression_r_squared < 0.6
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low R² Score Detected"
+          description: "Model's R-squared value is below 0.6 for 5 minutes."
+
+      - alert: HighMSE
+        expr: regression_mean_squared_error > 500
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High Mean Squared Error"
+          description: "Model's MSE exceeded 500 during training."

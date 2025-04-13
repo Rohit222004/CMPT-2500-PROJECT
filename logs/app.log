@@ -1,0 +1,42 @@
+2025-04-13 00:40:31,198 - ml_app.train - INFO - 📥 Loading data from Data/preprocessed/preprocessed_data.csv
+2025-04-13 00:40:31,404 - ml_app.train - INFO - ✅ Data loaded successfully with shape (145114, 17)
+2025-04-13 00:40:31,407 - ml_app.train - INFO - 🔎 Preparing dataset...
+2025-04-13 00:40:31,453 - ml_app.train - INFO - ✅ Data split into training and test sets:
+2025-04-13 00:40:31,453 - ml_app.train - INFO -    - Training set: (116091, 12)
+2025-04-13 00:40:31,453 - ml_app.train - INFO -    - Test set: (29023, 12)
+2025-04-13 00:40:31,457 - ml_app.train - INFO - 🔨 Building pipeline with Ridge
+2025-04-13 00:40:31,457 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 00:40:31,457 - ml_app.train - INFO - 🚀 Training model: Ridge_Regression_v1
+2025-04-13 00:40:31,470 - urllib3.connectionpool - WARNING - Retrying (Retry(total=6, connect=6, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f9ac39ebf10>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 00:40:36,144 - urllib3.connectionpool - WARNING - Retrying (Retry(total=5, connect=5, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f9ac39eb2b0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 00:40:42,969 - urllib3.connectionpool - WARNING - Retrying (Retry(total=4, connect=4, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f9ac3a104f0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 00:40:59,820 - urllib3.connectionpool - WARNING - Retrying (Retry(total=3, connect=3, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f9ac3a103a0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 00:41:30,841 - urllib3.connectionpool - WARNING - Retrying (Retry(total=2, connect=2, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f9ac3a10460>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 00:42:33,348 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=1, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f9ac3a10640>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 00:43:17,797 - ml_app.train - INFO - 📥 Loading data from Data/preprocessed/preprocessed_data.csv
+2025-04-13 00:43:18,067 - ml_app.train - INFO - ✅ Data loaded successfully with shape (145114, 17)
+2025-04-13 00:43:18,072 - ml_app.train - INFO - 🔎 Preparing dataset...
+2025-04-13 00:43:18,122 - ml_app.train - INFO - ✅ Data split into training and test sets:
+2025-04-13 00:43:18,122 - ml_app.train - INFO -    - Training set: (116091, 12)
+2025-04-13 00:43:18,122 - ml_app.train - INFO -    - Test set: (29023, 12)
+2025-04-13 00:43:18,126 - ml_app.train - INFO - 🔨 Building pipeline with Ridge
+2025-04-13 00:43:18,126 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 00:43:18,127 - ml_app.train - INFO - 🚀 Training model: Ridge_Regression_v1
+2025-04-13 00:43:18,204 - ml_app.train - INFO - 📌 Creating experiment 'Days_Experiment'
+2025-04-13 00:43:18,524 - ml_app.train - INFO - ✅ MLflow run started with ID: b0444b29f2e042f1988c18cc78448651
+2025-04-13 00:43:18,732 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 00:44:28,423 - urllib3.connectionpool - WARNING - Retrying (Retry(total=0, connect=0, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f9ac3a118a0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 00:45:24,915 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 00:45:25,003 - ml_app.train - INFO - ✅ Ridge_Regression_v1 Metrics - MSE: 321.00418955891394, RMSE: 17.916589785975287, R2: 0.9033050241205707
+2025-04-13 00:45:29,470 - ml_app.train - INFO - ✅ Ridge_Regression_v1 saved to models/ridge_model_v1.pkl
+2025-04-13 00:45:29,471 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/b0444b29f2e042f1988c18cc78448651
+2025-04-13 00:45:29,569 - ml_app.train - INFO - 🔨 Building pipeline with LinearRegression
+2025-04-13 00:45:29,569 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 00:45:29,569 - ml_app.train - INFO - 🚀 Training model: Linear_Regression_v2
+2025-04-13 00:45:29,580 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 00:45:29,611 - ml_app.train - INFO - ✅ MLflow run started with ID: 6744d1ed2cba48fdaae4f9832473d6ef
+2025-04-13 00:45:29,639 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 00:46:34,922 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 00:46:35,040 - ml_app.train - INFO - ✅ Linear_Regression_v2 Metrics - MSE: 321.5872393270554, RMSE: 17.93285363033601, R2: 0.9031293940661954
+2025-04-13 00:46:39,620 - ml_app.train - INFO - ✅ Linear_Regression_v2 saved to models/linear_model_v2.pkl
+2025-04-13 00:46:39,620 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/6744d1ed2cba48fdaae4f9832473d6ef

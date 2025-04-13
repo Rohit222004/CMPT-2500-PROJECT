@@ -1,3 +1,8 @@
+prometheus_flask_exporter==0.22.4
+mlflow
+prometheus_client
+psutil
+
 pandas==2.2.3
 numpy==2.2.2
 scikit-learn==1.6.1
@@ -6,3 +11,4 @@ seaborn==0.13.2
 dvc==3.59.1
 dvc-gdrive==3.0.1
 flask==3.1.0
+

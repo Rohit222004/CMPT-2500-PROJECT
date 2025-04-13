@@ -9,7 +9,9 @@ scrape_configs:
   - job_name: 'ml-api'
     scrape_interval: 5s
     static_configs:
-      - targets: ['app:9000']
+      - targets: ['cmpt-2500-project-app:8002']  # ✅ Correct container name
+    metrics_path: /metrics
+    scheme: http
 
   - job_name: 'prometheus'
     scrape_interval: 10s
@@ -20,7 +22,7 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets:
-          - 'training-metrics:8002'
+          - 'cmpt-2500-project-app:8002'  # ✅ Also updated here
     metrics_path: /metrics
     scheme: http
     scrape_timeout: 3s

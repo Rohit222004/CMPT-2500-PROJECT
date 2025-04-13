@@ -29,7 +29,6 @@ from src.utils.monitoring import RegressionMonitor
 loggers = configure_logging()
 logger = loggers['train']
 
-
 class ModelTrainer:
     def __init__(
         self,
@@ -56,11 +55,10 @@ class ModelTrainer:
         df = pd.read_csv(self.preprocessed_file)
         logger.info(f"✅ Data loaded successfully with shape {df.shape}")
 
-        # 🔧 Convert integer columns with potential missing values to float
-        convert_cols = ['number_price_changes', 'year', 'month', 'day']  # Add any others if needed
+        convert_cols = ['number_price_changes', 'year', 'month', 'day']
         for col in convert_cols:
-          if col in df.columns:
-            df[col] = df[col].astype(float)
+            if col in df.columns:
+                df[col] = df[col].astype(float)
 
         return df
 
@@ -68,22 +66,10 @@ class ModelTrainer:
         df = self.load_data()
         logger.info("🔎 Preparing dataset...")
 
-        X = df[
-            [
-                "number_price_changes",
-                "vehicle_age",
-                "mileage",
-                "price",
-                "msrp",
-                "dealer_name",
-                "listing_type",
-                "make",
-                "model",
-                "year",
-                "month",
-                "day",
-            ]
-        ]
+        X = df[[
+            "number_price_changes", "vehicle_age", "mileage", "price", "msrp",
+            "dealer_name", "listing_type", "make", "model", "year", "month", "day"
+        ]]
         y = df["days_on_market"]
 
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
@@ -98,51 +84,31 @@ class ModelTrainer:
         logger.info(f"🔨 Building pipeline with {regressor_class.__name__}")
 
         numerical_features = [
-            "mileage",
-            "price",
-            "msrp",
-            "vehicle_age",
-            "year",
-            "month",
-            "day",
-            "number_price_changes",
+            "mileage", "price", "msrp", "vehicle_age",
+            "year", "month", "day", "number_price_changes"
         ]
         categorical_features = ["dealer_name", "listing_type", "make", "model"]
 
-        preprocessor = ColumnTransformer(
-            transformers=[
-                (
-                    "num",
-                    Pipeline(
-                        steps=[
-                            ("imputer", SimpleImputer(strategy="mean")),
-                            ("scaler", StandardScaler()),
-                        ]
-                    ),
-                    numerical_features,
-                ),
-                (
-                    "cat",
-                    OneHotEncoder(handle_unknown="ignore"),
-                    categorical_features,
-                ),
-            ]
-        )
+        preprocessor = ColumnTransformer(transformers=[
+            ("num", Pipeline(steps=[
+                ("imputer", SimpleImputer(strategy="mean")),
+                ("scaler", StandardScaler())
+            ]), numerical_features),
+            ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features)
+        ])
 
-        pipeline = Pipeline(
-            steps=[
-                ("preprocessor", preprocessor),
-                ("regressor", regressor_class()),
-            ]
-        )
+        pipeline = Pipeline(steps=[
+            ("preprocessor", preprocessor),
+            ("regressor", regressor_class())
+        ])
 
-        logger.info(f"✅ Pipeline created successfully!")
+        logger.info("✅ Pipeline created successfully!")
         return pipeline
 
     def train_and_save_model(self, pipeline, param_dist, model_name, output_path):
         logger.info(f"🚀 Training model: {model_name}")
 
-        mlflow_tracking_uri = os.environ.get('MLFLOW_TRACKING_URI', 'http://localhost:5000')
+        mlflow_tracking_uri = os.environ.get('MLFLOW_TRACKING_URI', 'http://localhost:5001')
         mlflow.set_tracking_uri(mlflow_tracking_uri)
 
         experiment_name = "Days_Experiment"
@@ -171,7 +137,7 @@ class ModelTrainer:
                 cv=5,
                 scoring="r2",
                 random_state=42,
-                verbose=1,
+                verbose=1
             )
 
             random_search.fit(self.X_train, self.y_train)
@@ -190,22 +156,18 @@ class ModelTrainer:
             mlflow.log_metric("rmse", rmse)
             mlflow.log_metric("r2", r2)
 
-            # Prometheus monitoring integration
             monitor = RegressionMonitor(port=8002)
             monitor.record_metrics(mse=mse, rmse=rmse, r_squared=r2)
 
             signature = infer_signature(self.X_train, best_model.predict(self.X_train))
-            mlflow.sklearn.log_model(
-                best_model, "model", signature=signature, input_example=self.X_train.iloc[:5]
-            )
+            mlflow.sklearn.log_model(best_model, "model", signature=signature, input_example=self.X_train.iloc[:5])
 
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
             joblib.dump(best_model, output_path)
 
             logger.info(f"✅ {model_name} saved to {output_path}")
-
             run_id = mlflow.active_run().info.run_id
-            logger.info(f"🔗 MLflow Run URL: http://localhost:5000/#/experiments/{experiment_id}/runs/{run_id}")
+            logger.info(f"🔗 MLflow Run URL: http://localhost:5001/#/experiments/{experiment_id}/runs/{run_id}")
 
         mlflow.end_run()
 
@@ -215,19 +177,15 @@ class ModelTrainer:
         pipeline_ridge = self.build_pipeline(Ridge)
         param_dist_ridge = {
             "regressor__alpha": np.logspace(-6, 3, 100),
-            "preprocessor__num__imputer__strategy": ["mean", "median", "most_frequent"],
+            "preprocessor__num__imputer__strategy": ["mean", "median", "most_frequent"]
         }
-        self.train_and_save_model(
-            pipeline_ridge, param_dist_ridge, "Ridge_Regression_v1", self.model_output_path_v1
-        )
+        self.train_and_save_model(pipeline_ridge, param_dist_ridge, "Ridge_Regression_v1", self.model_output_path_v1)
 
         pipeline_linreg = self.build_pipeline(LinearRegression)
         param_dist_linreg = {
-            "preprocessor__num__imputer__strategy": ["mean", "median", "most_frequent"],
+            "preprocessor__num__imputer__strategy": ["mean", "median", "most_frequent"]
         }
-        self.train_and_save_model(
-            pipeline_linreg, param_dist_linreg, "Linear_Regression_v2", self.model_output_path_v2
-        )
+        self.train_and_save_model(pipeline_linreg, param_dist_linreg, "Linear_Regression_v2", self.model_output_path_v2)
 
 
 if __name__ == "__main__":

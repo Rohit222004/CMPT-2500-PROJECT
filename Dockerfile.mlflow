@@ -4,18 +4,18 @@ FROM python:3.10-slim
 # Set working directory
 WORKDIR /mlflow
 
-# Install MLflow and necessary dependencies
-RUN pip install --no-cache-dir \
-    mlflow==2.20.2 \
-    pymysql==1.1.0
+# Install MLflow and required dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+        mlflow==2.20.2 \
+        pymysql==1.1.0
 
-# Create artifacts and logs directory
-RUN mkdir -p /mlflow/artifacts
-RUN mkdir -p /mlflow/logs
-RUN chmod -R 777 /mlflow/logs
+# Create necessary directories and set permissions
+RUN mkdir -p /mlflow/artifacts /mlflow/logs && \
+    chmod -R 777 /mlflow
 
-# Expose MLflow port
-EXPOSE 5000
+# Expose MLflow UI port
+EXPOSE 5001
 
-# Start MLflow server
+# Start the MLflow server
 CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000", "--backend-store-uri", "sqlite:///mlflow.db", "--default-artifact-root", "/mlflow/artifacts"]
