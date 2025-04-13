@@ -22,7 +22,7 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets:
-          - 'cmpt-2500-project-app:8002'  # ✅ Also updated here
+          - 'cmpt-2500-project-train:8002'  # ✅ Also updated here
     metrics_path: /metrics
     scheme: http
     scrape_timeout: 3s

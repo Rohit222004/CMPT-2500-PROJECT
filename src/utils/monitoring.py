@@ -38,7 +38,7 @@ class RegressionMonitor(TrainingMonitor):
             ['feature_name'],
             registry=self.registry
         )
-
+    
     def record_metrics(self, mse=None, rmse=None, mae=None, r_squared=None, feature_importance=None):
         """Record regression metrics"""
         if mse is not None:

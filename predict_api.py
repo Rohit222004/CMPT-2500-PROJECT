@@ -7,10 +7,10 @@ import traceback
 import time
 import psutil
 import threading
-
-# Prometheus monitoring
 from prometheus_flask_exporter import PrometheusMetrics
+from src.utils.monitoring import RegressionMonitor
 from prometheus_client import Counter, Histogram, Gauge
+
 
 # Initialize logging
 loggers = configure_logging()
@@ -187,7 +187,10 @@ def monitor_resources():
 if __name__ == "__main__":
     logger.info("Starting Flask API...")
 
-    # Start resource monitoring
+    # ✅ Start Prometheus metrics server using your custom monitoring class
+    monitor = RegressionMonitor(port=8002)
+
+    # ✅ Start resource monitoring
     monitor_thread = threading.Thread(target=monitor_resources, daemon=True)
     monitor_thread.start()
 

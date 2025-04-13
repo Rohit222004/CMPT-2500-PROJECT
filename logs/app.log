@@ -40,3 +40,257 @@
 2025-04-13 00:46:35,040 - ml_app.train - INFO - ✅ Linear_Regression_v2 Metrics - MSE: 321.5872393270554, RMSE: 17.93285363033601, R2: 0.9031293940661954
 2025-04-13 00:46:39,620 - ml_app.train - INFO - ✅ Linear_Regression_v2 saved to models/linear_model_v2.pkl
 2025-04-13 00:46:39,620 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/6744d1ed2cba48fdaae4f9832473d6ef
+2025-04-13 00:57:20,589 - ml_app.train - INFO - 📥 Loading data from Data/preprocessed/preprocessed_data.csv
+2025-04-13 00:57:20,852 - ml_app.train - INFO - ✅ Data loaded successfully with shape (145114, 17)
+2025-04-13 00:57:20,855 - ml_app.train - INFO - 🔎 Preparing dataset...
+2025-04-13 00:57:20,906 - ml_app.train - INFO - ✅ Data split into training and test sets:
+2025-04-13 00:57:20,906 - ml_app.train - INFO -    - Training set: (116091, 12)
+2025-04-13 00:57:20,906 - ml_app.train - INFO -    - Test set: (29023, 12)
+2025-04-13 00:57:20,911 - ml_app.train - INFO - 🔨 Building pipeline with Ridge
+2025-04-13 00:57:20,911 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 00:57:20,912 - ml_app.train - INFO - 🚀 Training model: Ridge_Regression_v1
+2025-04-13 00:57:20,927 - urllib3.connectionpool - WARNING - Retrying (Retry(total=6, connect=6, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f4e5e803eb0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 00:57:25,547 - urllib3.connectionpool - WARNING - Retrying (Retry(total=5, connect=5, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f4e5e803250>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 00:57:25,941 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 00:57:25,883 - ml_app.train - INFO - ✅ MLflow run started with ID: 46cd620a61c04b96b8a5599614f2ad97
+2025-04-13 00:57:25,223 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 00:59:36,927 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 00:59:37,017 - ml_app.train - INFO - ✅ Ridge_Regression_v1 Metrics - MSE: 321.00418955891394, RMSE: 17.916589785975287, R2: 0.9033050241205707
+2025-04-13 00:59:43,127 - ml_app.train - INFO - ✅ Ridge_Regression_v1 saved to models/ridge_model_v1.pkl
+2025-04-13 00:59:43,127 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/46cd620a61c04b96b8a5599614f2ad97
+2025-04-13 00:59:43,164 - ml_app.train - INFO - 🔨 Building pipeline with LinearRegression
+2025-04-13 00:59:43,164 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 00:59:43,164 - ml_app.train - INFO - 🚀 Training model: Linear_Regression_v2
+2025-04-13 00:59:43,172 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 00:59:43,208 - ml_app.train - INFO - ✅ MLflow run started with ID: 8b9f27e411b542ac8a88bc55040faa7f
+2025-04-13 00:59:43,230 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 01:00:50,641 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 01:00:50,742 - ml_app.train - INFO - ✅ Linear_Regression_v2 Metrics - MSE: 321.5872393270554, RMSE: 17.93285363033601, R2: 0.9031293940661954
+2025-04-13 01:00:55,493 - ml_app.train - INFO - ✅ Linear_Regression_v2 saved to models/linear_model_v2.pkl
+2025-04-13 01:00:55,493 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/8b9f27e411b542ac8a88bc55040faa7f
+2025-04-13 01:08:58,290 - ml_app.train - INFO - 📥 Loading data from Data/preprocessed/preprocessed_data.csv
+2025-04-13 01:08:58,766 - ml_app.train - INFO - ✅ Data loaded successfully with shape (145114, 17)
+2025-04-13 01:08:58,777 - ml_app.train - INFO - 🔎 Preparing dataset...
+2025-04-13 01:08:58,857 - ml_app.train - INFO - ✅ Data split into training and test sets:
+2025-04-13 01:08:58,858 - ml_app.train - INFO -    - Training set: (116091, 12)
+2025-04-13 01:08:58,858 - ml_app.train - INFO -    - Test set: (29023, 12)
+2025-04-13 01:08:58,864 - ml_app.train - INFO - 🔨 Building pipeline with Ridge
+2025-04-13 01:08:58,864 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 01:08:58,864 - ml_app.train - INFO - 🚀 Training model: Ridge_Regression_v1
+2025-04-13 01:08:58,891 - urllib3.connectionpool - WARNING - Retrying (Retry(total=6, connect=6, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f5d9d067eb0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 01:09:03,712 - urllib3.connectionpool - WARNING - Retrying (Retry(total=5, connect=5, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f5d9d067250>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 01:09:04,232 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 01:09:04,357 - ml_app.train - INFO - ✅ MLflow run started with ID: 3c07c6b76e9e45c695b071a3edd938ca
+2025-04-13 01:09:04,389 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 01:11:29,333 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 01:11:29,445 - ml_app.train - INFO - ✅ Ridge_Regression_v1 Metrics - MSE: 321.00418955891394, RMSE: 17.916589785975287, R2: 0.9033050241205707
+2025-04-13 01:11:36,131 - ml_app.train - INFO - ✅ Ridge_Regression_v1 saved to models/ridge_model_v1.pkl
+2025-04-13 01:11:36,131 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/3c07c6b76e9e45c695b071a3edd938ca
+2025-04-13 01:11:36,169 - ml_app.train - INFO - 🔨 Building pipeline with LinearRegression
+2025-04-13 01:11:36,169 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 01:11:36,169 - ml_app.train - INFO - 🚀 Training model: Linear_Regression_v2
+2025-04-13 01:11:36,180 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 01:11:36,220 - ml_app.train - INFO - ✅ MLflow run started with ID: eb35db32e8ff476a9ddc938ecddb1f0e
+2025-04-13 01:11:36,241 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 01:13:14,695 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 01:13:14,831 - ml_app.train - INFO - ✅ Linear_Regression_v2 Metrics - MSE: 321.5872393270554, RMSE: 17.93285363033601, R2: 0.9031293940661954
+2025-04-13 01:13:19,819 - ml_app.train - INFO - ✅ Linear_Regression_v2 saved to models/linear_model_v2.pkl
+2025-04-13 01:13:19,819 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/eb35db32e8ff476a9ddc938ecddb1f0e
+2025-04-13 01:22:25,537 - ml_app.train - INFO - 📥 Loading data from Data/preprocessed/preprocessed_data.csv
+2025-04-13 01:22:25,886 - ml_app.train - INFO - ✅ Data loaded successfully with shape (145114, 17)
+2025-04-13 01:22:25,891 - ml_app.train - INFO - 🔎 Preparing dataset...
+2025-04-13 01:22:25,945 - ml_app.train - INFO - ✅ Data split into training and test sets:
+2025-04-13 01:22:25,945 - ml_app.train - INFO -    - Training set: (116091, 12)
+2025-04-13 01:22:25,945 - ml_app.train - INFO -    - Test set: (29023, 12)
+2025-04-13 01:22:25,950 - ml_app.train - INFO - 🔨 Building pipeline with Ridge
+2025-04-13 01:22:25,950 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 01:22:25,950 - ml_app.train - INFO - 🚀 Training model: Ridge_Regression_v1
+2025-04-13 01:22:25,972 - urllib3.connectionpool - WARNING - Retrying (Retry(total=6, connect=6, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f98ae13feb0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 01:22:30,925 - urllib3.connectionpool - WARNING - Retrying (Retry(total=5, connect=5, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f98ae13f250>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 01:22:31,372 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 01:22:32,082 - ml_app.train - INFO - ✅ MLflow run started with ID: 205033211fec4d3cbddb1eb1dd8572a1
+2025-04-13 01:22:32,122 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 01:25:02,431 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 01:25:02,536 - ml_app.train - INFO - ✅ Ridge_Regression_v1 Metrics - MSE: 321.00418955891394, RMSE: 17.916589785975287, R2: 0.9033050241205707
+2025-04-13 01:25:08,654 - ml_app.train - INFO - ✅ Ridge_Regression_v1 saved to models/ridge_model_v1.pkl
+2025-04-13 01:25:08,654 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/205033211fec4d3cbddb1eb1dd8572a1
+2025-04-13 01:25:08,690 - ml_app.train - INFO - 🔨 Building pipeline with LinearRegression
+2025-04-13 01:25:08,691 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 01:25:08,691 - ml_app.train - INFO - 🚀 Training model: Linear_Regression_v2
+2025-04-13 01:25:08,698 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 01:25:08,734 - ml_app.train - INFO - ✅ MLflow run started with ID: c3930519da1b43ed9b2a9f4bad980485
+2025-04-13 01:25:08,753 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 01:26:27,804 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 01:26:27,932 - ml_app.train - INFO - ✅ Linear_Regression_v2 Metrics - MSE: 321.5872393270554, RMSE: 17.93285363033601, R2: 0.9031293940661954
+2025-04-13 01:26:33,634 - ml_app.train - INFO - ✅ Linear_Regression_v2 saved to models/linear_model_v2.pkl
+2025-04-13 01:26:33,635 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/c3930519da1b43ed9b2a9f4bad980485
+2025-04-13 01:36:45,873 - ml_app.train - INFO - 📥 Loading data from Data/preprocessed/preprocessed_data.csv
+2025-04-13 01:36:46,181 - ml_app.train - INFO - ✅ Data loaded successfully with shape (145114, 17)
+2025-04-13 01:36:46,188 - ml_app.train - INFO - 🔎 Preparing dataset...
+2025-04-13 01:36:46,247 - ml_app.train - INFO - ✅ Data split into training and test sets:
+2025-04-13 01:36:46,247 - ml_app.train - INFO -    - Training set: (116091, 12)
+2025-04-13 01:36:46,248 - ml_app.train - INFO -    - Test set: (29023, 12)
+2025-04-13 01:36:46,252 - ml_app.train - INFO - 🔨 Building pipeline with Ridge
+2025-04-13 01:36:46,252 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 01:36:46,253 - ml_app.train - INFO - 🚀 Training model: Ridge_Regression_v1
+2025-04-13 01:36:49,586 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 01:36:50,557 - ml_app.train - INFO - ✅ MLflow run started with ID: e6cd49a35b3b4b759c801eab8dd6eaa3
+2025-04-13 01:36:50,582 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 01:39:33,720 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 01:39:33,852 - ml_app.train - INFO - ✅ Ridge_Regression_v1 Metrics - MSE: 321.00418955891394, RMSE: 17.916589785975287, R2: 0.9033050241205707
+2025-04-13 01:39:42,063 - ml_app.train - INFO - ✅ Ridge_Regression_v1 saved to models/ridge_model_v1.pkl
+2025-04-13 01:39:42,064 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/e6cd49a35b3b4b759c801eab8dd6eaa3
+2025-04-13 01:39:42,102 - ml_app.train - INFO - 🔨 Building pipeline with LinearRegression
+2025-04-13 01:39:42,102 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 01:39:42,102 - ml_app.train - INFO - 🚀 Training model: Linear_Regression_v2
+2025-04-13 01:39:42,118 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 01:39:42,167 - ml_app.train - INFO - ✅ MLflow run started with ID: 39d6b7874db8480588b79ae6cb855f33
+2025-04-13 01:39:42,195 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 01:41:09,981 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 01:41:10,074 - ml_app.train - INFO - ✅ Linear_Regression_v2 Metrics - MSE: 321.5872393270554, RMSE: 17.93285363033601, R2: 0.9031293940661954
+2025-04-13 01:41:15,755 - ml_app.train - INFO - ✅ Linear_Regression_v2 saved to models/linear_model_v2.pkl
+2025-04-13 01:41:15,756 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/39d6b7874db8480588b79ae6cb855f33
+2025-04-13 01:52:06,407 - ml_app.train - INFO - 📥 Loading data from Data/preprocessed/preprocessed_data.csv
+2025-04-13 01:52:07,087 - ml_app.train - INFO - ✅ Data loaded successfully with shape (145114, 17)
+2025-04-13 01:52:07,097 - ml_app.train - INFO - 🔎 Preparing dataset...
+2025-04-13 01:52:07,186 - ml_app.train - INFO - ✅ Data split into training and test sets:
+2025-04-13 01:52:07,186 - ml_app.train - INFO -    - Training set: (116091, 12)
+2025-04-13 01:52:07,186 - ml_app.train - INFO -    - Test set: (29023, 12)
+2025-04-13 01:52:07,194 - ml_app.train - INFO - 🔨 Building pipeline with Ridge
+2025-04-13 01:52:07,194 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 01:52:07,195 - ml_app.train - INFO - 🚀 Training model: Ridge_Regression_v1
+2025-04-13 01:52:10,692 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 01:52:11,434 - ml_app.train - INFO - ✅ MLflow run started with ID: 61e7e3a279e24d48997446ee54ca37d3
+2025-04-13 01:52:11,471 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 01:55:09,593 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 01:55:09,770 - ml_app.train - INFO - ✅ Ridge_Regression_v1 Metrics - MSE: 321.00418955891394, RMSE: 17.916589785975287, R2: 0.9033050241205707
+2025-04-13 01:55:20,708 - ml_app.train - INFO - ✅ Ridge_Regression_v1 saved to models/ridge_model_v1.pkl
+2025-04-13 01:55:20,709 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/61e7e3a279e24d48997446ee54ca37d3
+2025-04-13 01:55:20,777 - ml_app.train - INFO - 🔨 Building pipeline with LinearRegression
+2025-04-13 01:55:20,778 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 01:55:20,778 - ml_app.train - INFO - 🚀 Training model: Linear_Regression_v2
+2025-04-13 01:55:20,795 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 01:55:20,858 - ml_app.train - INFO - ✅ MLflow run started with ID: 692a3e3c982841aea8dba89f8d9920df
+2025-04-13 01:55:20,906 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 01:56:43,756 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 01:56:43,876 - ml_app.train - INFO - ✅ Linear_Regression_v2 Metrics - MSE: 321.5872393270554, RMSE: 17.93285363033601, R2: 0.9031293940661954
+2025-04-13 01:56:48,951 - ml_app.train - INFO - ✅ Linear_Regression_v2 saved to models/linear_model_v2.pkl
+2025-04-13 01:56:48,951 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/692a3e3c982841aea8dba89f8d9920df
+2025-04-13 02:13:55,519 - ml_app.train - INFO - 📥 Loading data from Data/preprocessed/preprocessed_data.csv
+2025-04-13 02:13:56,010 - ml_app.train - INFO - ✅ Data loaded successfully with shape (145114, 17)
+2025-04-13 02:13:56,015 - ml_app.train - INFO - 🔎 Preparing dataset...
+2025-04-13 02:13:56,067 - ml_app.train - INFO - ✅ Data split into training and test sets:
+2025-04-13 02:13:56,067 - ml_app.train - INFO -    - Training set: (116091, 12)
+2025-04-13 02:13:56,067 - ml_app.train - INFO -    - Test set: (29023, 12)
+2025-04-13 02:13:56,072 - ml_app.train - INFO - 🔨 Building pipeline with Ridge
+2025-04-13 02:13:56,073 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 02:13:56,073 - ml_app.train - INFO - 🚀 Training model: Ridge_Regression_v1
+2025-04-13 02:13:56,105 - urllib3.connectionpool - WARNING - Retrying (Retry(total=6, connect=6, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ff2c6693ee0>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 02:14:00,618 - urllib3.connectionpool - WARNING - Retrying (Retry(total=5, connect=5, read=7, redirect=7, status=7)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7ff2c6693250>: Failed to establish a new connection: [Errno 111] Connection refused')': /api/2.0/mlflow/experiments/get-by-name?experiment_name=Days_Experiment
+2025-04-13 02:14:01,060 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 02:14:01,683 - ml_app.train - INFO - ✅ MLflow run started with ID: 1bbf9819c2884696850c5cb3b1358077
+2025-04-13 02:14:02,217 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 02:16:55,203 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 02:16:55,341 - ml_app.train - INFO - ✅ Ridge_Regression_v1 Metrics - MSE: 321.00418955891394, RMSE: 17.916589785975287, R2: 0.9033050241205707
+2025-04-13 02:17:03,673 - ml_app.train - INFO - ✅ Ridge_Regression_v1 saved to models/ridge_model_v1.pkl
+2025-04-13 02:17:03,673 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/1bbf9819c2884696850c5cb3b1358077
+2025-04-13 02:17:03,720 - ml_app.train - INFO - 🔨 Building pipeline with LinearRegression
+2025-04-13 02:17:03,720 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 02:17:03,721 - ml_app.train - INFO - 🚀 Training model: Linear_Regression_v2
+2025-04-13 02:17:03,735 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 02:17:03,777 - ml_app.train - INFO - ✅ MLflow run started with ID: 527111f421224f6e85952e32134f7ec6
+2025-04-13 02:17:03,802 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 02:18:48,560 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 02:18:48,764 - ml_app.train - INFO - ✅ Linear_Regression_v2 Metrics - MSE: 321.5872393270554, RMSE: 17.93285363033601, R2: 0.9031293940661954
+2025-04-13 02:18:54,653 - ml_app.train - INFO - ✅ Linear_Regression_v2 saved to models/linear_model_v2.pkl
+2025-04-13 02:18:54,654 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/527111f421224f6e85952e32134f7ec6
+2025-04-13 02:25:36,388 - ml_app.train - INFO - 📥 Loading data from Data/preprocessed/preprocessed_data.csv
+2025-04-13 02:25:36,672 - ml_app.train - INFO - ✅ Data loaded successfully with shape (145114, 17)
+2025-04-13 02:25:36,678 - ml_app.train - INFO - 🔎 Preparing dataset...
+2025-04-13 02:25:36,723 - ml_app.train - INFO - ✅ Data split into training and test sets:
+2025-04-13 02:25:36,723 - ml_app.train - INFO -    - Training set: (116091, 12)
+2025-04-13 02:25:36,723 - ml_app.train - INFO -    - Test set: (29023, 12)
+2025-04-13 02:25:36,727 - ml_app.train - INFO - 🔨 Building pipeline with Ridge
+2025-04-13 02:25:36,728 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 02:25:36,729 - ml_app.train - INFO - 🚀 Training model: Ridge_Regression_v1
+2025-04-13 02:25:36,751 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 02:25:36,835 - ml_app.train - INFO - ✅ MLflow run started with ID: 907672775e1c42b1a6ab571196648177
+2025-04-13 02:25:36,857 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 02:28:16,960 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 02:28:17,060 - ml_app.train - INFO - ✅ Ridge_Regression_v1 Metrics - MSE: 321.00418955891394, RMSE: 17.916589785975287, R2: 0.9033050241205707
+2025-04-13 02:28:23,683 - ml_app.train - INFO - ✅ Ridge_Regression_v1 saved to models/ridge_model_v1.pkl
+2025-04-13 02:28:23,683 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/907672775e1c42b1a6ab571196648177
+2025-04-13 02:28:23,709 - ml_app.train - INFO - 🔨 Building pipeline with LinearRegression
+2025-04-13 02:28:23,709 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 02:28:23,709 - ml_app.train - INFO - 🚀 Training model: Linear_Regression_v2
+2025-04-13 02:28:23,722 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 02:28:23,750 - ml_app.train - INFO - ✅ MLflow run started with ID: 6d83077d15f4421ba56b4c03342bf742
+2025-04-13 02:28:23,771 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 02:29:41,363 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 02:29:41,455 - ml_app.train - INFO - ✅ Linear_Regression_v2 Metrics - MSE: 321.5872393270554, RMSE: 17.93285363033601, R2: 0.9031293940661954
+2025-04-13 02:29:46,697 - ml_app.train - INFO - ✅ Linear_Regression_v2 saved to models/linear_model_v2.pkl
+2025-04-13 02:29:46,697 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/6d83077d15f4421ba56b4c03342bf742
+2025-04-13 02:36:11,137 - ml_app.train - INFO - 📥 Loading data from Data/preprocessed/preprocessed_data.csv
+2025-04-13 02:36:11,655 - ml_app.train - INFO - ✅ Data loaded successfully with shape (145114, 17)
+2025-04-13 02:36:11,658 - ml_app.train - INFO - 🔎 Preparing dataset...
+2025-04-13 02:36:11,703 - ml_app.train - INFO - ✅ Data split into training and test sets:
+2025-04-13 02:36:11,703 - ml_app.train - INFO -    - Training set: (116091, 12)
+2025-04-13 02:36:11,703 - ml_app.train - INFO -    - Test set: (29023, 12)
+2025-04-13 02:36:11,708 - ml_app.train - INFO - 🔨 Building pipeline with Ridge
+2025-04-13 02:36:11,708 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 02:36:11,708 - ml_app.train - INFO - 🚀 Training model: Ridge_Regression_v1
+2025-04-13 02:36:11,812 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 02:36:11,947 - ml_app.train - INFO - ✅ MLflow run started with ID: c27f0a45dc4e4dab95cbce2040eb3d72
+2025-04-13 02:36:11,969 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 02:40:17,970 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 02:40:18,064 - ml_app.train - INFO - ✅ Ridge_Regression_v1 Metrics - MSE: 321.00418955891394, RMSE: 17.916589785975287, R2: 0.9033050241205707
+2025-04-13 02:40:26,523 - ml_app.train - INFO - ✅ Ridge_Regression_v1 saved to models/ridge_model_v1.pkl
+2025-04-13 02:40:26,523 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/c27f0a45dc4e4dab95cbce2040eb3d72
+2025-04-13 02:40:26,614 - ml_app.train - INFO - 🔨 Building pipeline with LinearRegression
+2025-04-13 02:40:26,615 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 02:40:26,615 - ml_app.train - INFO - 🚀 Training model: Linear_Regression_v2
+2025-04-13 02:40:26,681 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 02:40:26,738 - ml_app.train - INFO - ✅ MLflow run started with ID: 713a4379e4054c87917bec1bda459c86
+2025-04-13 02:40:26,774 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 02:42:56,973 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 02:42:57,085 - ml_app.train - INFO - ✅ Linear_Regression_v2 Metrics - MSE: 321.5872393270554, RMSE: 17.93285363033601, R2: 0.9031293940661954
+2025-04-13 02:43:03,373 - ml_app.train - INFO - ✅ Linear_Regression_v2 saved to models/linear_model_v2.pkl
+2025-04-13 02:43:03,373 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/713a4379e4054c87917bec1bda459c86
+2025-04-13 03:02:56,523 - ml_app.train - INFO - 📥 Loading data from Data/preprocessed/preprocessed_data.csv
+2025-04-13 03:02:57,644 - ml_app.train - INFO - ✅ Data loaded successfully with shape (145114, 17)
+2025-04-13 03:02:57,669 - ml_app.train - INFO - 🔎 Preparing dataset...
+2025-04-13 03:02:57,814 - ml_app.train - INFO - ✅ Data split into training and test sets:
+2025-04-13 03:02:57,816 - ml_app.train - INFO -    - Training set: (116091, 12)
+2025-04-13 03:02:57,817 - ml_app.train - INFO -    - Test set: (29023, 12)
+2025-04-13 03:02:57,827 - ml_app.train - INFO - 🔨 Building pipeline with Ridge
+2025-04-13 03:02:57,828 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 03:02:57,829 - ml_app.train - INFO - 🚀 Training model: Ridge_Regression_v1
+2025-04-13 03:03:04,075 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 03:03:05,317 - ml_app.train - INFO - ✅ MLflow run started with ID: 4a568c64b12540b28a4df59fd7a95d31
+2025-04-13 03:03:05,375 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 03:03:44,233 - ml_app.train - INFO - 📥 Loading data from Data/preprocessed/preprocessed_data.csv
+2025-04-13 03:03:44,566 - ml_app.train - INFO - ✅ Data loaded successfully with shape (145114, 17)
+2025-04-13 03:03:44,568 - ml_app.train - INFO - 🔎 Preparing dataset...
+2025-04-13 03:03:44,606 - ml_app.train - INFO - ✅ Data split into training and test sets:
+2025-04-13 03:03:44,607 - ml_app.train - INFO -    - Training set: (116091, 12)
+2025-04-13 03:03:44,607 - ml_app.train - INFO -    - Test set: (29023, 12)
+2025-04-13 03:03:44,611 - ml_app.train - INFO - 🔨 Building pipeline with Ridge
+2025-04-13 03:03:44,611 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 03:03:44,612 - ml_app.train - INFO - 🚀 Training model: Ridge_Regression_v1
+2025-04-13 03:03:44,630 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 03:03:44,702 - ml_app.train - INFO - ✅ MLflow run started with ID: f2237bd2fee9424bb9bfa221fbb150f1
+2025-04-13 03:03:44,726 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 03:06:17,785 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 03:06:17,888 - ml_app.train - INFO - ✅ Ridge_Regression_v1 Metrics - MSE: 321.00418955891394, RMSE: 17.916589785975287, R2: 0.9033050241205707
+2025-04-13 03:06:25,227 - ml_app.train - INFO - ✅ Ridge_Regression_v1 saved to models/ridge_model_v1.pkl
+2025-04-13 03:06:25,227 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/f2237bd2fee9424bb9bfa221fbb150f1
+2025-04-13 03:06:25,260 - ml_app.train - INFO - 🔨 Building pipeline with LinearRegression
+2025-04-13 03:06:25,260 - ml_app.train - INFO - ✅ Pipeline created successfully!
+2025-04-13 03:06:25,260 - ml_app.train - INFO - 🚀 Training model: Linear_Regression_v2
+2025-04-13 03:06:25,270 - ml_app.train - INFO - 📌 Using existing experiment ID: 1
+2025-04-13 03:06:25,306 - ml_app.train - INFO - ✅ MLflow run started with ID: d0608866c72241a181c9e177c9561bab
+2025-04-13 03:06:25,325 - ml_app.train - INFO - 🔎 Running RandomizedSearchCV...
+2025-04-13 03:07:54,668 - ml_app.train - INFO - ✅ Model training completed
+2025-04-13 03:07:54,790 - ml_app.train - INFO - ✅ Linear_Regression_v2 Metrics - MSE: 321.5872393270554, RMSE: 17.93285363033601, R2: 0.9031293940661954
+2025-04-13 03:08:00,643 - ml_app.train - INFO - ✅ Linear_Regression_v2 saved to models/linear_model_v2.pkl
+2025-04-13 03:08:00,643 - ml_app.train - INFO - 🔗 MLflow Run URL: http://localhost:5001/#/experiments/1/runs/d0608866c72241a181c9e177c9561bab
