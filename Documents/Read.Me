@@ -1,45 +1,68 @@
-# Days on Market Predictor for Vehicle Sales Optimization
+Go_Auto: Days on Market Predictor for Vehicle Sales Optimization
 
-## Project Overview
-This project aims to predict the number of days a vehicle will remain on the market before being sold. The solution involves data cleaning, feature engineering, and training two regression models—Ridge Regression and Linear Regression—to generate predictions. The project is structured following best practices in machine learning development, including modular code, version control, configuration management, and comprehensive documentation.
+Project Overview
+This project predicts how many days a vehicle will stay on the market before it’s sold, using machine learning regression techniques. We’ve followed full MLOps practices—covering data versioning, model tuning, real-time predictions, containerization, and production-grade monitoring with Prometheus and Grafana.
 
-## Team Members
-- Rohit  
-- Geetika  
-- Spandan Dahal  
-- Jatin Dandyan
+Key Highlights:
 
-## Course
-**CMPT-2500: Machine Learning Deployment and Software Development**
+Built with modular, maintainable code
 
-## Project Structure
-The project is organized as a Python package with the following directory structure:
+Uses DVC for data version control and MLflow for experiment tracking
 
+Fully containerized with Docker and Docker Compose
 
-## Features
-- Dual Model Approach:
-  Train and compare two models:
-  - **Ridge Regression (v1):** Incorporates L2 regularization to handle multicollinearity.
-  - **Linear Regression (v2):** Serves as a baseline model.
-- Robust Data Preprocessing:  
-  Extensive cleaning, outlier handling, and feature engineering ensure high-quality input data.
-- Hyperparameter Tuning:
-  RandomizedSearchCV is used for efficient model tuning.
-- Real-Time Prediction API: 
-  A Flask-based REST API (`predict_api.py`) enables real-time predictions.
-- Model Evaluation: 
-  Evaluation scripts compute metrics such as MSE, RMSE, and R² for performance assessment.
+Integrated monitoring dashboards with Prometheus + Grafana
 
-## Setup and Installation
+Team Members
+1. Rohit
 
-### Prerequisites
-- Python 3.7 or higher
-- Virtual environment (recommended)
+2. Geetika
 
-### Environment Setup
-1. Clone the Repository:
-   ```bash
-   git clone <repository_url>
-   cd Days_on_Market_Predictor
+3. Spandan Dahal
 
-For additional information, please refer to our detailed documentation file.
+4. Jatin Dandyan
+
+Course
+CMPT-2500: Machine Learning Deployment and Software Development
+
+Project Structure
+
+The project follows a scalable production-ready structure:
+
+CMPT-2500_PROJECT/
+├── Data/                         # Raw and processed data
+├── Documents/
+│   ├── Api_Documentation/       # API and endpoint documentation
+│   ├── Documentation/           # Markdown files and usage info
+│   └── Read.Me                  # Main overview and highlights
+├── grafana/                     # Dashboard provisioning setup
+├── logs/                        # Application and training logs
+├── mlartifacts/                 # Trained ML artifacts
+├── mlruns/                      # MLflow experiment logs
+├── models/                      # Serialized trained models
+├── Predictions/                 # Sample predictions/output
+├── prometheus/                  # Prometheus configuration
+├── PythonNotebook/              # EDA and development notebooks
+├── src/                         # Source code: train, predict, monitor
+│   ├── predict_api.py           # Main Flask API app
+│   ├── logging_config.py        # Logging setup
+│   └── ...                      # Other Python utilities
+├── Test_Cases/                  # Unit tests and model tests
+├── docker-compose.yml           # Docker orchestration file
+├── Dockerfile                   # Dockerfile for app container
+├── Dockerfile.mlflow            # Dockerfile for MLflow container
+├── Makefile                     # Automation and env setup
+├── requirements.txt             # Python dependencies
+└── .dvc/, .gitignore, .mlruns, etc.
+
+Setup & Installation
+
+Prerequisites
+
+Python 3.7+
+
+Docker Desktop
+
+WSL (Ubuntu)
+
+Git

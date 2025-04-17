@@ -1,125 +1,135 @@
-# **Deep Explanation of the Project Code**
+Go_Auto Prediction API
 
-This document explains the code and design decisions for the **Days on Market Predictor** project. The project handles data preprocessing, training, and prediction using Ridge and Linear Regression models. It also includes a Flask-based REST API and logs to both the console and files for monitoring.
+Overview
+This Flask-based REST API serves machine learning models for predicting vehicle time-on-market (in days) based on features such as mileage, MSRP, price change count, dealer attributes, and more.
 
----
+It includes:
 
-## 1. **`preprocess.py`**
+Two model versions for predictions: Ridge Regression and Linear Regression
 
-### **Purpose**  
-This script handles data cleaning and feature engineering. It takes raw CSV files and converts them into a structured format ready for training.
+Flask API endpoints
 
-### **DataPreprocessor Class**
+Health and home endpoints
 
-- **Attributes:**
-  - `file_path (str)` → Path to the raw data file.  
-  - `df (pd.DataFrame)` → DataFrame holding the dataset.  
+Monitoring enabled with Prometheus & Grafana
 
-- **Methods:**
-  - `load_data()`  
-    - Reads CSV using `pandas.read_csv`.  
-    - Prints a preview of the data (head, info, describe).  
+| *Service*       | *Container Port Mapping* | *Description*                   |
+|-------------------|----------------------------|-----------------------------------|
+| ML App (v1)       | 5001:5000                  | Model v1 Flask server             |
+| Prometheus        | 9090:9090                  | Monitoring metrics database       |
+| Grafana           | 3000:3000                  | Visualization dashboard           |
+| API App           | 8002:8002, 9000:9000       | REST API container (Flask)        |
 
-  - `preprocess_data()`  
-    - Logs duplicate rows.  
-    - Replaces low `price` and `msrp` values with group means.  
-    - Handles missing values using mean imputation.  
-    - Encodes categorical variables.  
-    - Creates `vehicle_age` from `model_year`.  
-    - Extracts year, month, and day from `listing_first_date`.  
+> You can test the API locally via: http://127.0.0.1:9000
 
-  - `save_preprocessed_data()`  
-    - Saves the processed DataFrame to CSV.  
 
-### ✅ **Design Decisions**
-- Used group-based mean replacement for low prices to handle outliers.
-- Created `vehicle_age` and extracted date components for better feature engineering.
-- Included detailed logging to track processing steps.
+Available Endpoints
 
----
+| *Method* | *Endpoint*               | *Description*                             |
+|------------|----------------------------|---------------------------------------------|
+| GET      | /Go_Auto_home            | Provides API description and usage          |
+| GET      | /Go_Auto_health_status   | Confirms API is operational                 |
+| GET      | /v1/predict1             | Ridge Regression prediction (best model)    |
+| GET      | /v2/predict1             | Linear Regression prediction (baseline)     |
 
-## 2. **`train.py`**
+1. Home Endpoint
+Endpoint: /Go_Auto_home
 
-### **Purpose**  
-This script handles model training using Ridge Regression and Linear Regression. It uses cross-validation to tune hyperparameters and logs the training details using MLflow.
+Method: GET
 
-### **ModelTrainer Class**
+Purpose: Shows API purpose, routes, and input format.
 
-- **Attributes:**
-  - `preprocessed_file` → Path to the preprocessed data.  
-  - `model_output_path_v1` & `model_output_path_v2` → Paths to save trained models.  
-  - `test_cases_path` → Path to save test cases.  
-  - `X_train`, `X_test`, `y_train`, `y_test` → Train/test splits.  
-  - `best_model_v1`, `best_model_v2` → Trained models.  
+curl -X GET http://127.0.0.1:9000/Go_Auto_home
 
-- **Methods:**
-  - `load_data()`  
-    - Loads the preprocessed data.  
+Sample Response: 
+{
+  "message": "Welcome to the Go_Auto Prediction API.",
+  "description": "This API predicts days-on-market using two ML models.",
+  "endpoints": {
+    "/v1/predict1": "Ridge model (v1)",
+    "/v2/predict1": "Linear Regression model (v2)",
+    "/Go_Auto_health_status": "API health check"
+  }
+}
 
-  - `prepare_dataset()`  
-    - Splits data into train and test sets.  
+2. Health Check
+Endpoint: /Go_Auto_health_status
 
-  - `build_pipeline()`  
-    - Builds a preprocessing pipeline for numeric and categorical data.  
-    - Adds Ridge or Linear Regression as the regressor.  
+Method: GET
 
-  - `train_and_save_model()`  
-    - Uses `RandomizedSearchCV` to tune hyperparameters.  
-    - Logs parameters and metrics using MLflow.  
-    - Saves the best model using `joblib.dump`.  
+Purpose: Checks if API and models are ready.
 
-  - `train()`  
-    - Trains both Ridge and Linear Regression models.  
-    - Saves test cases for future use.  
+curl -X GET http://127.0.0.1:9000/Go_Auto_health_status
 
-### ✅ **Design Decisions**
-- Ridge Regression helps with multicollinearity using L2 regularization.
-- Linear Regression acts as a baseline model.
-- MLflow handles experiment tracking and logging.
+Sample Response:
+{
+  "status": "Go_Auto API is up and running!",
+  "models_loaded": {
+    "model_v1": true,
+    "model_v2": true
+  }
+}
 
----
+3. Prediction - Ridge Regression (Model v1)
+Endpoint: /v1/predict1
 
-## 3. **`predict_api.py`**
+Method: GET
 
-### **Purpose**  
-This script runs a Flask-based REST API to serve predictions in real time. 
+Model Path: models/ridge_model_v1.pkl
 
-### **Endpoints**
-- **Home (`/`)**  
-    - Displays an overview of the API.  
-    - Shows available endpoints and input format.  
+Sample Response:
+[
+  25.31,
+  36.09,
+  18.44
+]
 
-- **Health (`/CMPT-2500_PROJECT_health_status`)**  
-    - Confirms that the API is running.  
-    - Logs model loading status.  
+4. Prediction - Linear Regression (Model v2)
+Endpoint: /v2/predict1
 
-- **Predict v1 (`/v1/predict1`)**  
-    - Uses Ridge Regression for predictions.  
+Method: GET
 
-- **Predict v2 (`/v2/predict1`)**  
-    - Uses Linear Regression for predictions.  
+Model Path: models/linear_model_v2.pkl
 
-### ✅ **Design Decisions**
-- Logs input and output for better debugging.
-- Input validation ensures data format consistency.
-- Flask app is set to listen on `0.0.0.0` to work inside Docker.
+Sample Response:
+[
+  22.33,
+  31.04,
 
----
+  20.51
+]
 
-## 4. **Logging Configuration – `logging_config.py`**  
-- Configured to:
-  - Write logs to both `stdout` and `app.log` using `RotatingFileHandler`.  
-  - Rotate logs when the size exceeds 10MB (up to 5 backups).  
-  - Create separate loggers for `train` and `api` components.  
+6. How to Run Locally
+# Clone your project
+git clone https://github.com/https://github.com/Rohit222004/CMPT-2500-PROJECT.git
 
-### **Example:**
-```python
-from logging_config import configure_logging
+# Install dependencies
+pip install -r requirements.txt
 
-loggers = configure_logging()
-logger = loggers['train']
+# Start API server
+python src/predict_api.py
 
-def train_model():
-    logger.info("Starting model training")
-    # Training code here
-    logger.info(f"Model trained successfully with accuracy: {accuracy}")
+How to Run Prometheus & Grafana using Docker
+
+Step 1: Run All Containers
+docker-compose up -d
+
+This will spin up:
+
+The prediction API
+
+Prometheus (at http://localhost:9090)
+
+Grafana (at http://localhost:3000)
+
+Access the Monitoring Tools
+
+Tool | URL | Login Credentials (if needed)
+Prometheus | http://localhost:9090 | N/A
+Grafana | http://localhost:3000 | admin / admin (default)
+
+You can:
+
+Query real-time metrics in Prometheus
+
+View dashboards and alerts in Grafana
